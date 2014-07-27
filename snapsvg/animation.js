@@ -17,8 +17,33 @@ window.onload = function ()
       }
     }
 
+    // create text separately, and set text-anchor to "end"
+    var lexusText = s.text(180, 100, ["134hp", "Lexus CT200H"])
+      // may want to style separately
+      // lexusText.select('tspan:first-of-type').attr({fontSize:'2.2em'});
+      // lexusText.select('tspan:last-of-type').attr({dx:-100, dy:20});
+    var mercedesText = s.text(380, 100, ["174hp", "Mercedes B class ED"])
+    var bmwText = s.text(220, 400, ["170hp", "BMW i3"])
+    var bmw2Text = s.text(560, 400, ["180hp","BMW 320i"])
+    var audiText = s.text(1100, 80, ["204hp", "A3 e-tron"])
 
-    buildVerticalLines(50, 100, 2, 250, 30, 20);
+
+    var textSet = Snap.set();
+    textSet.push(lexusText)
+      .push(mercedesText)
+      .push(bmwText)
+      .push(bmw2Text)
+      .push(audiText);
+
+    horsepowerStyleText = function(text){
+      text.select('tspan:first-of-type').attr({fontSize:'2.2em'});
+      text.select('tspan:last-of-type').attr({dx:-100, dy:20});
+    };
+
+    textSet.forEach(horsepowerStyleText);
+
+
+    buildVerticalLines(100, 200, 2, 150, 50, 20);
 
   }
 
