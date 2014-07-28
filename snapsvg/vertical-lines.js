@@ -6,12 +6,30 @@ window.onload = function ()
     // can create a Set of the vertical lines
     var lineSet = Snap.set();
 
+    function timer(line, i){
+      setTimeout( function(){fadeIn(line)}, i * 50);
+    }
+
+    function fadeIn(line){
+      line.animate({opacity:1}, 1000, mina.easeout)
+    }
+
     // builds "quantity" of vertical lines/rectangles, "distance" pixels apart
-    var buildVerticalLines = function(x, y, width, height, quantity, distance){
+    function buildVerticalLines(x, y, width, height, quantity, distance){
+
      for(var i=0; i < quantity; i++){
-        s.rect(x + (i*distance), y, width, height)
-          .attr({opacity:0})
-          .animate({opacity:1}, 3000, mina.easeout );
+        // var beginOffset = i.toString() + "s"
+        // console.log(beginOffset)
+        var line = s.rect(x + (i*distance), y, width, height).attr({opacity:0});
+
+        // Create the function and call on each iteration of the loop
+        // timer(line, i);
+
+        // or create a Crockford module
+        var module = function(line, i) {
+          return setTimeout(function(){fadeIn(line)}, i * 50)
+        }(line, i);
+
       }
     }
 
@@ -35,7 +53,7 @@ window.onload = function ()
       .push(bmw2HPText)
       .push(audiHPText);
 
-    horsepowerStyle = function(text){
+    function horsepowerStyle(text){
       text.attr({fontSize:'2.2em'});
     };
 
@@ -47,6 +65,7 @@ window.onload = function ()
     // Call Functions
     buildVerticalLines(100, 145, 2, 150, 50, 20);
     buildVerticalLines(161, 295, 1, 30, 47, 20);
+
 
   }
 

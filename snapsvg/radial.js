@@ -41,6 +41,11 @@ window.onload = function(){
     var centerRightLine= s.rect(500, 400, 2, 425).attr({transform:"rotate(270 501 400)", fill: g, stroke: g})
   }
 
+  var text = function(){
+    // var
+
+  }
+
   // create the center circle
   // s.circle(500, 400, 100).attr({ fill: "#fff"})
 
@@ -48,9 +53,10 @@ window.onload = function(){
   // circleAnimation();
 
    // create the radial
-   radialFlare(56)
+   radialFlare(140)
    extendedCenterLines()
 
-   // halfRadialFlare(27);
+   // halfRadialFlare(48);
+   // extendedCenterLines()
 
 }
