@@ -18,8 +18,6 @@ window.onload = function ()
     function buildVerticalLines(x, y, width, height, quantity, distance){
 
      for(var i=0; i < quantity; i++){
-        // var beginOffset = i.toString() + "s"
-        // console.log(beginOffset)
         var line = s.rect(x + (i*distance), y, width, height).attr({opacity:0});
 
         // Create the function once and call on each iteration of the loop
@@ -39,30 +37,30 @@ window.onload = function ()
     }
 
     // Text creation
-    var lexusText = s.text(220, 100, "Lexus CT200H").attr({"text-anchor":"end"})
-    var lexusHPText = s.text(220, 70, "134hp").attr({"text-anchor":"end"})
-    var mercedesText = s.text(580, 100, "Mercedes B class ED").attr({"text-anchor":"end"})
-    var mercedesHPText = s.text(580, 70, "174hp").attr({"text-anchor":"end"})
-    var bmwText = s.text(420, 400, "BMW i3").attr({"text-anchor":"end"})
-    var bmwHPText = s.text(420, 370, "170hp").attr({"text-anchor":"end"})
-    var bmw2Text = s.text(660, 400, "BMW 320i").attr({"text-anchor":"end"})
-    var bmw2HPText = s.text(660, 370, "180hp").attr({"text-anchor":"end"})
-    var audiText = s.text(1070, 80, "A3 e-tron").attr({"text-anchor":"end"})
-    var audiHPText = s.text(1070, 50, "204hp").attr({"text-anchor":"end"})
+    // var lexusText = s.text(220, 100, "Lexus CT200H").attr({"text-anchor":"end"})
+    // var lexusHPText = s.text(220, 70, "134hp").attr({"text-anchor":"end"})
+    // var mercedesText = s.text(580, 100, "Mercedes B class ED").attr({"text-anchor":"end"})
+    // var mercedesHPText = s.text(580, 70, "174hp").attr({"text-anchor":"end"})
+    // var bmwText = s.text(420, 400, "BMW i3").attr({"text-anchor":"end"})
+    // var bmwHPText = s.text(420, 370, "170hp").attr({"text-anchor":"end"})
+    // var bmw2Text = s.text(660, 400, "BMW 320i").attr({"text-anchor":"end"})
+    // var bmw2HPText = s.text(660, 370, "180hp").attr({"text-anchor":"end"})
+    // var audiText = s.text(1070, 80, "A3 e-tron").attr({"text-anchor":"end"})
+    // var audiHPText = s.text(1070, 50, "204hp").attr({"text-anchor":"end"})
 
-    // Create a set to iterate text styles
-    var horsepowerSet = Snap.set();
-    horsepowerSet.push(lexusHPText)
-      .push(mercedesHPText)
-      .push(bmwHPText)
-      .push(bmw2HPText)
-      .push(audiHPText);
+    // // Create a set to iterate text styles
+    // var horsepowerSet = Snap.set();
+    // horsepowerSet.push(lexusHPText)
+    //   .push(mercedesHPText)
+    //   .push(bmwHPText)
+    //   .push(bmw2HPText)
+    //   .push(audiHPText);
 
-    function horsepowerStyle(text){
-      text.attr({fontSize:'2.2em'});
-    };
+    // function horsepowerStyle(text){
+    //   text.attr({fontSize:'2.2em'});
+    // };
 
-    horsepowerSet.forEach(horsepowerStyle);
+    // horsepowerSet.forEach(horsepowerStyle);
 
     // Create lines extending from text to the vertical lines
     // TO DO

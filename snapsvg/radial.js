@@ -2,17 +2,6 @@ window.onload = function(){
 
   var s = Snap("#svg");
 
-  // g is a linear gradient, relative to the element applied
-  var g = s.paper.gradient("r(0,1,1)#cf5300-#fff")
-
-  function timer(line, i){
-    setTimeout( function(){fadeIn(line)}, i * 100);
-  }
-
-  function fadeIn(line){
-    line.animate({opacity:1}, 125, mina.easeout)
-  }
-
   var radialFlare = function(type, numberOfLines){
     if (type === "half"){
       var totalDegrees = 180;
@@ -21,14 +10,23 @@ window.onload = function(){
     };
 
     for(i=0; i<numberOfLines; i++){
-      // can extract this to change the angle of starting
       var degree = ((totalDegrees / numberOfLines) * i) + 90
-      var line = s.rect(500, 400, 2, 350).attr({opacity:0, transform:"rotate(" + degree + " 501 400)"})
-      timer(line, i);
+      var line = s.paper.rect(500, 400, 2, 350).attr({opacity:0, transform:"rotate(" + degree + " 501 400)"})
+      fadeInDelay(line, i);
     }
 
-    var centerCircle = s.circle(500, 400, 160).attr({ fill: "#fff"})
+    var centerMask = s.paper.circle(500, 400, 160).attr({ fill: "#fff"})
   }
+
+  function fadeInDelay(line, i){
+    setTimeout( function(){fadeIn(line)}, i * 10);
+  }
+
+  function fadeIn(line){
+    line.animate({opacity:1}, 1250, mina.easeout)
+  }
+
+
 
   // deprecated function, now a parameter to decide if half or full circle
   // var halfRadialFlare = function(numberOfLines){
@@ -37,7 +35,7 @@ window.onload = function(){
   //     s.rect(500, 400, 2, 350).attr({transform:"rotate(" + degree + " 501 400)"})
   //   }
 
-  //   var centerCircle = s.circle(500, 400, 160).attr({ fill: "#fff"})
+  //   var centerMask = s.circle(500, 400, 160).attr({ fill: "#fff"})
   // }
 
   // manual creation of the circle
@@ -55,12 +53,16 @@ window.onload = function(){
   //   var centerCircle = s.circle(500, 400, 160).attr({ fill: "#fff"})
   // }
 
+    // g is a linear gradient, relative to the element applied
+  var g = s.paper.gradient("r(0,1,1)#cf5300-#fff")
+
   var extendedCenterLines = function(){
     var centerLeftLine = s.rect(500, 400, 2, 425).attr({transform:"rotate(90 501 400)", fill: g, stroke: g})
     var centerRightLine= s.rect(500, 400, 2, 425).attr({transform:"rotate(270 501 400)", fill: g, stroke: g})
     s.paper.circle(75, 400, 4).attr({fill: "#cf5300"})
     s.paper.circle(925, 400, 4).attr({fill: "#cf5300"})
 
+    // create a group for setting opacity to 0, then call fadeInDelay(group, 500)
   }
 
   var text = function(){
@@ -76,8 +78,9 @@ window.onload = function(){
 
    // create the radial
    // possible parameters: left or right or starting position
-   radialFlare("full", 56)
+   radialFlare("full", 100)
    // radialFlare("half", 24)
    extendedCenterLines()
+   // text(mobile)
 
 }
