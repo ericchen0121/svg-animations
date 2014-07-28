@@ -4,7 +4,7 @@ window.onload = function ()
     var s = Snap("#svg");
 
     // can create a Set of the vertical lines
-    var lineSet = Snap.set();
+    // var lineSet = Snap.set();
 
     function timer(line, i){
       setTimeout( function(){fadeIn(line)}, i * 50);
@@ -22,13 +22,18 @@ window.onload = function ()
         // console.log(beginOffset)
         var line = s.rect(x + (i*distance), y, width, height).attr({opacity:0});
 
-        // Create the function and call on each iteration of the loop
-        // timer(line, i);
+        // Create the function once and call on each iteration of the loop
+        timer(line, i);
 
-        // or create a Crockford module
-        var module = function(line, i) {
-          return setTimeout(function(){fadeIn(line)}, i * 50)
-        }(line, i);
+        // or self-invoking function
+        // (function (singleLine, n) {
+        //   return setTimeout(function(){fadeIn(singleLine)}, n * 50)
+        // })(line, i);
+
+        // or create a Crockford module for private variables
+        // var module = function(singleLine, n) {
+        //   return setTimeout(function(){fadeIn(singleLine)}, n * 50)
+        // }(line, i);
 
       }
     }
