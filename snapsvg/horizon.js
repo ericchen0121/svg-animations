@@ -101,7 +101,7 @@ window.onload = function(){
     descriptions.attr({fontSize: '.7em'})
   }
 
-  // verticalText is an array of arrays
+  // text is an array
   var renderLeftRightText = function(text){
 
     // create SnapSvg groups for applying styles
@@ -261,7 +261,7 @@ window.onload = function(){
   ]
 
   var chargeTimeText = [
-    ['5.5h', 'iPad', 0],
+    ['5.5h', 'iPad', 2],
     ['3h', 'Laptop', 8],
     ['2h', 'iPhone', 19],
     ['2.3h', 'Audi A3 eTron', 13]
@@ -284,11 +284,11 @@ window.onload = function(){
   }
 
    // SEE DIFFERENT STYLES
-   // draw("leftRight", 50)
-   draw("topDown", 20)
+   draw("leftRight", 50)
+   // draw("topDown", 20)
    // draw("halfRadial", 25, radialText)
    // draw("fullRadial", 72, radialText)
+   // draw("halfRadialMobile", 25, radialText)
    // draw("halfRadialMobile", 75, radialText)
-   // draw("halfRadialMobile", 120, radialText)
 
 }
