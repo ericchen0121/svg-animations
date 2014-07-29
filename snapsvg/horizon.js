@@ -4,13 +4,15 @@ window.onload = function(){
 
   // RADIAL FLARE CREATION
   var radialFlare = function(type, numberOfLines){
+
     if (type === "half"){
       var totalDegrees = 180;
     } else {
       var totalDegrees = 360;
     };
 
-    for(i=0; i<=numberOfLines; i++){
+    // draw all radial lines
+    for(i=0; i <= numberOfLines; i++){
       var degree = ((totalDegrees / numberOfLines) * i) + 90
       var line = s.paper.rect(radial.cx, radial.cy, 2, radial.r).attr({opacity:0, transform:"rotate(" + degree + " " + (radial.cx + 1) + " " + radial.cy + ")"})
 
@@ -24,14 +26,14 @@ window.onload = function(){
       fadeInDelay(line, i);
     }
 
-    var centerMask = s.paper.circle(radial.cx, radial.cy, radial.r / 2.2).attr({ fill: "#fff"})
+    // var centerMask = s.paper.circle(radial.cx, radial.cy, radial.r / 2.2).attr({ fill: "#fff"})
 
     // add in image of car in center (svg path)
   }
 
   // g is a linear gradient, relative to the element applied
-  var g = s.paper.gradient("r(0,1,1)#cf5300-#fff")
-  var gDark = s.paper.gradient("r(0,1,1)#000-#fff")
+  var g = s.paper.gradient("r(0,1,1)#cf5300-#fff:55")
+  var gDark = s.paper.gradient("r(0,1,1)#000-#fff:55")
 
   var extendedCenterLines = function(){
     var extension = 70
@@ -75,7 +77,6 @@ window.onload = function(){
 
   // leftText is {'title', 'description'}
   var renderRadialText = function(text, position){
-    // refactor so position values aren't hard coded
 
     var lx = radial.cx - radial.r + 100
     var rx = radial.cx + radial.r - 100
@@ -120,6 +121,7 @@ window.onload = function(){
       extendedCenterLines()
       renderRadialText(text, "outside")
     } else if(style==="halfRadialMobile"){
+      radial.r = 200
       radialFlare("half", lines)
       renderRadialText(text, "inside")
     }
@@ -133,6 +135,10 @@ window.onload = function(){
     rightDescription: 'The battery stores energy for later use'
   }
 
+  var verticalText = {
+
+  }
+
   // refactor this to be passed in the creation function
   var radial = {
     cx: 800,
@@ -141,10 +147,11 @@ window.onload = function(){
   }
 
    // UNCOMMENT TO SEE DIFFERENT STYLES
-   // draw("horizontal", 50)
-   draw("vertical", 20)
+   draw("horizontal", 150)
+   // draw("vertical", 20)
    // draw("halfRadial", 25, radialText)
-   // draw("fullRadial", 50, radialText)
-   // draw("halfRadialMobile", 20, radialText)
+   // draw("fullRadial", 72, radialText)
+   // draw("halfRadialMobile", 25, radialText)
+   // draw("halfRadialMobile", 120, radialText)
 
 }
