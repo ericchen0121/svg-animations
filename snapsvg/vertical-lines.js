@@ -6,7 +6,7 @@ window.onload = function ()
     // can create a Set of the vertical lines
     // var lineSet = Snap.set();
 
-    function timer(line, i){
+    function fadeInDelay(line, i){
       setTimeout( function(){fadeIn(line)}, i * 50);
     }
 
@@ -21,7 +21,7 @@ window.onload = function ()
         var line = s.rect(x + (i*distance), y, width, height).attr({opacity:0});
 
         // Create the function once and call on each iteration of the loop
-        timer(line, i);
+        fadeInDelay(line, i);
 
         // or self-invoking function
         // (function (singleLine, n) {
