@@ -74,18 +74,28 @@ window.onload = function(){
   // HELPER TEXT FUNCTIONS
 
   // leftText is {'title', 'description'}
-  var renderRadialText = function(text){
+  var renderRadialText = function(text, position){
     // refactor so position values aren't hard coded
 
-    var leftTitle = s.paper.text(250, 450, text.leftTitle).attr({"text-anchor": "end"})
-    var leftDescription = s.paper.text(250, 480, text.leftDescription).attr({"text-anchor": "end"})
-    var rightTitle = s.paper.text(700, 450, text.rightTitle).attr({"text-anchor": "start"})
-    var rightDescription = s.paper.text(700, 480, text.rightDescription).attr({"text-anchor": "start"})
+    var lx = radial.cx - radial.r + 100
+    var rx = radial.cx + radial.r - 100
+    var y = radial.cy + 50
+
+    if (position === "outside"){
+      lx -= 190
+      rx += 190
+      y -= 60
+    }
+
+    var leftTitle = s.paper.text(lx, y, text.leftTitle).attr({"text-anchor": "end"})
+    var leftDescription = s.paper.text(lx, y + 20, text.leftDescription).attr({"text-anchor": "end"})
+    var rightTitle = s.paper.text(rx, y, text.rightTitle).attr({"text-anchor": "start"})
+    var rightDescription = s.paper.text(rx, y + 20, text.rightDescription).attr({"text-anchor": "start"})
 
     var titles = s.group(leftTitle, rightTitle)
     var descriptions = s.group(leftDescription, rightDescription)
 
-    titles.attr({fontSize: '1.8em'})
+    titles.attr({fontSize: '1.2em'})
     descriptions.attr({fontSize: '.7em'})
   }
 
@@ -104,14 +114,14 @@ window.onload = function(){
     } else if(style==="halfRadial"){
       radialFlare("half", lines)
       extendedCenterLines()
-      renderRadialText(text)
+      renderRadialText(text, "outside")
     } else if(style==="fullRadial"){
       radialFlare("full", lines) // may need to make these calls more flexible, like the lines
       extendedCenterLines()
-      renderRadialText(text)
+      renderRadialText(text, "outside")
     } else if(style==="halfRadialMobile"){
       radialFlare("half", lines)
-      renderRadialText(text)
+      renderRadialText(text, "inside")
     }
   }
 
@@ -125,15 +135,15 @@ window.onload = function(){
 
   // refactor this to be passed in the creation function
   var radial = {
-    cx: 500,
-    cy: 400,
+    cx: 800,
+    cy: 500,
     r: 350
   }
 
    // UNCOMMENT TO SEE DIFFERENT STYLES
    // draw("horizontal", 50)
-   // draw("vertical", 20)
-   draw("halfRadial", 25, radialText)
+   draw("vertical", 20)
+   // draw("halfRadial", 25, radialText)
    // draw("fullRadial", 50, radialText)
    // draw("halfRadialMobile", 20, radialText)
 
