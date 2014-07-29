@@ -111,9 +111,16 @@ window.onload = function(){
     for(i = 0; i < len; i++){
       var xPosition = linePosition.x + linePosition.distance * verticalText[i][2] - 10
 
+      // create alternating up and down text locations
+      if(i % 2 == 0){
+        var yPosition = linePosition.y - 100
+      } else {
+        var yPosition = linePosition.y + linePosition.mainLineHeight + 100
+      }
+
       // create the text in the right position
-      var title = s.paper.text(xPosition, linePosition.y - 100, verticalText[i][0]).attr({"text-anchor":"end", fontSize: '2.0em', opacity: 0})
-      var description = s.paper.text(xPosition, linePosition.y - 70, verticalText[i][1]).attr({"text-anchor":"end", fontSize: '1.2em', opacity: 0})
+      var title = s.paper.text(xPosition, yPosition, verticalText[i][0]).attr({"text-anchor":"end", fontSize: '2.0em', opacity: 0})
+      var description = s.paper.text(xPosition, yPosition + 30, verticalText[i][1]).attr({"text-anchor":"end", fontSize: '1.2em', opacity: 0})
 
       // fade in opacity delay
       fadeInDelay(title, verticalText[i][2])
@@ -123,18 +130,25 @@ window.onload = function(){
       // titles.add(title)
       // descriptions.add(description)
 
-      renderTextExtenders(verticalText[i][2]);
+      renderTextExtenders(verticalText[i][2], i);
     }
 
   }
 
   // this renders the line extender to reach the text on the lineNumber
-  var renderTextExtenders = function(lineNumber){
+  // loop Number is used to determine up or down position
+  var renderTextExtenders = function(lineNumber, loopNumber){
     var xPosition = linePosition.x + linePosition.distance * lineNumber
+
+    if(i % 2 == 0){
+        var yPosition = linePosition.y - 135
+      } else {
+        var yPosition = linePosition.y + linePosition.mainLineHeight
+    }
 
     // timing function to sync vertical line creation
     // a small hack due to reusing the buildVerticalLines function, which uses the number of lines to create the setTimeout
-    setTimeout(function(){ buildVerticalLines(xPosition, linePosition.y - 125, 2, 125, 1, linePosition.distance)}, lineNumber * 40);
+    setTimeout(function(){ buildVerticalLines(xPosition, yPosition, 2, 135, 1, linePosition.distance)}, lineNumber * 40);
   }
 
   // ROUTER FUNCTION
@@ -181,8 +195,9 @@ window.onload = function(){
   // {title, description, line position number to draw on}
   var verticalText = [
     ['146hp', 'Lexus CT200H', 5],
-    ['146hp', 'Lexus CT200H', 12],
-    ['146hp', 'Lexus CT200H', 18],
+    ['146hp', 'Mercedes Benz', 12],
+    ['146hp', 'BMW', 18],
+    ['146hp', 'BMW i3', 22],
     ['175hp', 'Audi A3 eTron', 37]
   ]
 
