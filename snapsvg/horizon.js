@@ -32,8 +32,8 @@ window.onload = function(){
   }
 
   // g is a linear gradient, relative to the element applied
-  var g = s.paper.gradient("r(0,1,1)#cf5300-#fff:55")
-  var gDark = s.paper.gradient("r(0,1,1)#000-#fff:55")
+  var g = s.paper.gradient("r(0,1,1)#cf5300-#fff:60")
+  var gDark = s.paper.gradient("r(0,1,1)#000-#fff:60")
 
   var extendedCenterLines = function(){
     var extension = 70
@@ -103,15 +103,19 @@ window.onload = function(){
   // ROUTER FUNCTION
   function draw(style, lines, text){
     if(style ==="horizontal"){
-      buildVerticalLines(100, 145, 2, 150, lines, 20);
+      // main lines
+      buildVerticalLines(linePosition.x, linePosition.y, 2, linePosition.mainLineHeight, lines, linePosition.distance);
 
-      // (x + 20*linesDiff + 1, y + height, width, height, lines - linesDiff, distance)
-      buildVerticalLines(161, 295, 1, 30, lines - 3, 20);
+      // lower lines
+      buildVerticalLines(linePosition.x + 1 + 3 * linePosition.distance, linePosition.y + linePosition.mainLineHeight, 1, linePosition.miniLineHeight, lines - 3, linePosition.distance);
+
+      // text
+
     } else if (style==="vertical"){
-      buildHorizontalLines(100, 145, 2, 150, lines, 20)
+      buildHorizontalLines(linePosition.x, linePosition.y, 2, linePosition.mainLineHeight, lines, linePosition.distance)
 
       // (x + height, y, width, height, lines, distance)
-      buildHorizontalLines(130, 146, 1, 30, lines, 20)
+      buildHorizontalLines(linePosition.x + linePosition.miniLineHeight, linePosition.y + 1, 1, linePosition.miniLineHeight, lines, linePosition.distance)
     } else if(style==="halfRadial"){
       radialFlare("half", lines)
       extendedCenterLines()
@@ -135,15 +139,25 @@ window.onload = function(){
     rightDescription: 'The battery stores energy for later use'
   }
 
+
   var verticalText = {
 
   }
 
-  // refactor this to be passed in the creation function
+  // CONFIG POSITIONS
   var radial = {
     cx: 800,
     cy: 500,
     r: 350
+  }
+
+  var linePosition = {
+    x: 100,
+    y: 145,
+    mainLineHeight: 150,
+    miniLineHeight: 30,
+    distance: 30
+    // TODO: mainMiniOffset is the number of lines offset
   }
 
    // UNCOMMENT TO SEE DIFFERENT STYLES
