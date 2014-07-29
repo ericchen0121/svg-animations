@@ -2,6 +2,17 @@ window.onload = function(){
 
   var s = Snap("#svg");
 
+
+  // HELPER ANIMATION FUNCTIONS
+
+  function fadeInDelay(element, i){
+    setTimeout( function(){fadeIn(element)}, i * 40);
+  }
+
+  function fadeIn(element){
+    element.animate({opacity:1}, 600, mina.easeout)
+  }
+
   // RADIAL FLARE CREATION
   var radialFlare = function(type, numberOfLines){
 
@@ -50,27 +61,17 @@ window.onload = function(){
   // builds "quantity" of vertical lines/rectangles, "distance" pixels apart
   function buildVerticalLines(x, y, width, height, quantity, distance){
    for(var i=0; i < quantity; i++){
-      var line = s.rect(x + (i*distance), y, width, height).attr({opacity:0});
+      var line = s.rect(x + (i * distance), y, width, height).attr({ opacity:0 });
       fadeInDelay(line, i);
     }
   }
 
   function buildHorizontalLines(x, y, width, height, quantity, distance){
     for(var i=0; i < quantity; i++){
-      var newY = y + (i*distance)
-      var line = s.rect(x, newY, width, height).attr({opacity:0, transform:"rotate(90 " + x + " " + newY +")"});
+      var newY = y + (i * distance)
+      var line = s.rect(x, newY, width, height).attr({ opacity:0, transform:"rotate(90 " + x + " " + newY +")" });
       fadeInDelay(line, i);
     }
-  }
-
-  // HELPER ANIMATION FUNCTIONS
-
-  function fadeInDelay(element, i){
-    setTimeout( function(){fadeIn(element)}, i * 40);
-  }
-
-  function fadeIn(element){
-    element.animate({opacity:1}, 600, mina.easeout)
   }
 
   // HELPER TEXT FUNCTIONS
@@ -100,16 +101,17 @@ window.onload = function(){
     descriptions.attr({fontSize: '.7em'})
   }
 
-  var renderVerticalText = function(verticalText){
+  // verticalText is an array of arrays
+  var renderVerticalText = function(text){
 
     // create SnapSvg groups for applying styles
     // var titles = s.paper.g()
     // var descriptions = s.paper.g()
 
     // create text and style it
-    var len = verticalText.length
+    var len = text.length
     for(i = 0; i < len; i++){
-      var xPosition = linePosition.x + linePosition.distance * verticalText[i][2] - 10
+      var xPosition = linePosition.x + linePosition.distance * text[i][2] - 10
 
       // create alternating up and down text locations
       if(i % 2 == 0){
@@ -119,20 +121,64 @@ window.onload = function(){
       }
 
       // create the text in the right position
-      var title = s.paper.text(xPosition, yPosition, verticalText[i][0]).attr({"text-anchor":"end", fontSize: '2.0em', opacity: 0})
-      var description = s.paper.text(xPosition, yPosition + 30, verticalText[i][1]).attr({"text-anchor":"end", fontSize: '1.2em', opacity: 0})
+      var title = s.paper.text(xPosition, yPosition, text[i][0]).attr({"text-anchor":"end", fontSize: '2.0em', opacity: 0})
+
+      // if last one, emphasize it more
+      // NOTE: this is tightly coupled to the text array parameter
+      if(i=== len - 1){
+        title.attr({fontSize:'4.0em'})
+      }
+
+      var description = s.paper.text(xPosition, yPosition + 30, text[i][1]).attr({"text-anchor":"end", fontSize: '1.2em', opacity: 0})
 
       // fade in opacity delay
-      fadeInDelay(title, verticalText[i][2])
-      fadeInDelay(description, verticalText[i][2])
+      fadeInDelay(title, text[i][2])
+      fadeInDelay(description, text[i][2])
 
       // add to Snap groups
       // titles.add(title)
       // descriptions.add(description)
 
-      renderTextExtenders(verticalText[i][2], i);
+
+      renderTextExtenders(text[i][2], i);
     }
 
+  }
+
+  var renderHorizontalText = function(text){
+
+    // create SnapSvg groups for applying styles
+    // var titles = s.paper.g()
+    // var descriptions = s.paper.g()
+
+    // create text and style it
+    var len = text.length
+    for(i = 0; i < len; i++){
+      var xPosition = linePosition.x + linePosition.mainLineHeight
+      var yPosition = linePosition.y + linePosition.distance * text[i][2]
+
+      // create the text in the right position
+      var title = s.paper.text(xPosition, yPosition, text[i][0]).attr({"text-anchor":"end", fontSize: '1.4em', opacity: 0})
+
+      // if last one, emphasize it more
+      // NOTE: this is tightly coupled to the text array parameter
+      if(i=== len - 1){
+        title.attr({fontSize:'4.0em'})
+      }
+
+      var description = s.paper.text(xPosition, yPosition + 15, text[i][1]).attr({"text-anchor":"end", fontSize: '.8em', opacity: 0})
+
+      // fade in opacity delay
+      fadeInDelay(title, text[i][2])
+      fadeInDelay(description, text[i][2])
+
+      // add to Snap groups
+      // titles.add(title)
+      // descriptions.add(description)
+
+
+      renderHorizontalTextExtenders(text[i][2]);
+    }
   }
 
   // this renders the line extender to reach the text on the lineNumber
@@ -151,6 +197,15 @@ window.onload = function(){
     setTimeout(function(){ buildVerticalLines(xPosition, yPosition, 2, 135, 1, linePosition.distance)}, lineNumber * 40);
   }
 
+  var renderHorizontalTextExtenders = function(lineNumber){
+    var xPosition = linePosition.x + linePosition.miniLineHeight * 2
+    var yPosition = linePosition.y + linePosition.distance * lineNumber + 1
+
+    // timing function to sync vertical line creation
+    // a small hack due to reusing the buildVerticalLines function, which uses the number of lines to create the setTimeout
+    setTimeout(function(){ buildHorizontalLines(xPosition, yPosition, 1, linePosition.miniLineHeight, 1, linePosition.distance)}, lineNumber * 40);
+  }
+
   // ROUTER FUNCTION
   function draw(style, lines, text){
     if(style ==="horizontal"){
@@ -164,10 +219,13 @@ window.onload = function(){
       renderVerticalText(verticalText)
 
     } else if (style==="vertical"){
+      // (x + height, y, width, height, lines, distance)
+      // main lines
       buildHorizontalLines(linePosition.x, linePosition.y, 2, linePosition.mainLineHeight, lines, linePosition.distance)
 
-      // (x + height, y, width, height, lines, distance)
+      // lower lines
       buildHorizontalLines(linePosition.x + linePosition.miniLineHeight, linePosition.y + 1, 1, linePosition.miniLineHeight, lines, linePosition.distance)
+      renderHorizontalText(chargeTimeText)
     } else if(style==="halfRadial"){
       radialFlare("half", lines)
       extendedCenterLines()
@@ -198,7 +256,14 @@ window.onload = function(){
     ['146hp', 'Mercedes Benz', 12],
     ['146hp', 'BMW', 18],
     ['146hp', 'BMW i3', 22],
-    ['175hp', 'Audi A3 eTron', 37]
+    ['175hp', 'Audi A3 eTron', 49]
+  ]
+
+  var chargeTimeText = [
+    ['5.5h', 'iPad', 1],
+    ['3h', 'Laptop', 7],
+    ['2h', 'iPhone', 15],
+    ['2.3h', 'Audi A3 eTron', 11]
   ]
 
   // CONFIG POSITIONS
@@ -210,16 +275,16 @@ window.onload = function(){
 
   var linePosition = {
     x: 100,
-    y: 145,
-    mainLineHeight: 150,
-    miniLineHeight: 30,
-    distance: 30
+    y: 245,
+    mainLineHeight: 165,
+    miniLineHeight: 40,
+    distance: 20
     // TODO: mainMiniOffset is the number of lines offset
   }
 
    // SEE DIFFERENT STYLES
-   draw("horizontal", 50)
-   // draw("vertical", 20)
+   // draw("horizontal", 50)
+   draw("vertical", 20)
    // draw("halfRadial", 25, radialText)
    // draw("fullRadial", 72, radialText)
    // draw("halfRadialMobile", 75, radialText)
