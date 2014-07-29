@@ -102,7 +102,7 @@ window.onload = function(){
   }
 
   // verticalText is an array of arrays
-  var renderVerticalText = function(text){
+  var renderLeftRightText = function(text){
 
     // create SnapSvg groups for applying styles
     // var titles = s.paper.g()
@@ -145,7 +145,7 @@ window.onload = function(){
 
   }
 
-  var renderHorizontalText = function(text){
+  var renderTopDownText = function(text){
 
     // create SnapSvg groups for applying styles
     // var titles = s.paper.g()
@@ -154,19 +154,20 @@ window.onload = function(){
     // create text and style it
     var len = text.length
     for(i = 0; i < len; i++){
-      var xPosition = linePosition.x + linePosition.mainLineHeight
+      var xPosition = linePosition.x + linePosition.miniLineHeight * 2 + 20
       var yPosition = linePosition.y + linePosition.distance * text[i][2]
 
       // create the text in the right position
-      var title = s.paper.text(xPosition, yPosition, text[i][0]).attr({"text-anchor":"end", fontSize: '1.4em', opacity: 0})
+      var title = s.paper.text(xPosition, yPosition, text[i][0]).attr({"text-anchor":"start", fontSize: '1.4em', opacity: 0})
 
       // if last one, emphasize it more
       // NOTE: this is tightly coupled to the text array parameter
       if(i=== len - 1){
-        title.attr({fontSize:'4.0em'})
+        title.attr({fontSize:'3.2em'})
+        description.attr({fontSize:'1.0em'})
       }
 
-      var description = s.paper.text(xPosition, yPosition + 15, text[i][1]).attr({"text-anchor":"end", fontSize: '.8em', opacity: 0})
+      var description = s.paper.text(xPosition, yPosition + 15, text[i][1]).attr({"text-anchor":"start", fontSize: '.8em', opacity: 0})
 
       // fade in opacity delay
       fadeInDelay(title, text[i][2])
@@ -177,7 +178,7 @@ window.onload = function(){
       // descriptions.add(description)
 
 
-      renderHorizontalTextExtenders(text[i][2]);
+      renderTopDownTextExtenders(text[i][2]);
     }
   }
 
@@ -197,7 +198,7 @@ window.onload = function(){
     setTimeout(function(){ buildVerticalLines(xPosition, yPosition, 2, 135, 1, linePosition.distance)}, lineNumber * 40);
   }
 
-  var renderHorizontalTextExtenders = function(lineNumber){
+  var renderTopDownTextExtenders = function(lineNumber){
     var xPosition = linePosition.x + linePosition.miniLineHeight * 2
     var yPosition = linePosition.y + linePosition.distance * lineNumber + 1
 
@@ -208,7 +209,7 @@ window.onload = function(){
 
   // ROUTER FUNCTION
   function draw(style, lines, text){
-    if(style ==="horizontal"){
+    if(style ==="leftRight"){
       // main lines
       buildVerticalLines(linePosition.x, linePosition.y, 2, linePosition.mainLineHeight, lines, linePosition.distance);
 
@@ -216,16 +217,16 @@ window.onload = function(){
       buildVerticalLines(linePosition.x + 1 + 3 * linePosition.distance, linePosition.y + linePosition.mainLineHeight, 1, linePosition.miniLineHeight, lines - 3, linePosition.distance);
 
       // text
-      renderVerticalText(verticalText)
+      renderLeftRightText(verticalText)
 
-    } else if (style==="vertical"){
+    } else if (style==="topDown"){
       // (x + height, y, width, height, lines, distance)
       // main lines
       buildHorizontalLines(linePosition.x, linePosition.y, 2, linePosition.mainLineHeight, lines, linePosition.distance)
 
       // lower lines
       buildHorizontalLines(linePosition.x + linePosition.miniLineHeight, linePosition.y + 1, 1, linePosition.miniLineHeight, lines, linePosition.distance)
-      renderHorizontalText(chargeTimeText)
+      renderTopDownText(chargeTimeText)
     } else if(style==="halfRadial"){
       radialFlare("half", lines)
       extendedCenterLines()
@@ -260,10 +261,10 @@ window.onload = function(){
   ]
 
   var chargeTimeText = [
-    ['5.5h', 'iPad', 1],
-    ['3h', 'Laptop', 7],
-    ['2h', 'iPhone', 15],
-    ['2.3h', 'Audi A3 eTron', 11]
+    ['5.5h', 'iPad', 0],
+    ['3h', 'Laptop', 8],
+    ['2h', 'iPhone', 19],
+    ['2.3h', 'Audi A3 eTron', 13]
   ]
 
   // CONFIG POSITIONS
@@ -283,8 +284,8 @@ window.onload = function(){
   }
 
    // SEE DIFFERENT STYLES
-   // draw("horizontal", 50)
-   draw("vertical", 20)
+   // draw("leftRight", 50)
+   draw("topDown", 20)
    // draw("halfRadial", 25, radialText)
    // draw("fullRadial", 72, radialText)
    // draw("halfRadialMobile", 75, radialText)
