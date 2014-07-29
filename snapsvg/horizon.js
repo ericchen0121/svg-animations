@@ -65,12 +65,12 @@ window.onload = function(){
 
   // HELPER ANIMATION FUNCTIONS
 
-  function fadeInDelay(line, i){
-    setTimeout( function(){fadeIn(line)}, i * 40);
+  function fadeInDelay(element, i){
+    setTimeout( function(){fadeIn(element)}, i * 40);
   }
 
-  function fadeIn(line){
-    line.animate({opacity:1}, 600, mina.easeout)
+  function fadeIn(element){
+    element.animate({opacity:1}, 600, mina.easeout)
   }
 
   // HELPER TEXT FUNCTIONS
@@ -100,6 +100,43 @@ window.onload = function(){
     descriptions.attr({fontSize: '.7em'})
   }
 
+  var renderVerticalText = function(verticalText){
+
+    // create SnapSvg groups for applying styles
+    // var titles = s.paper.g()
+    // var descriptions = s.paper.g()
+
+    // create text and style it
+    var len = verticalText.length
+    for(i = 0; i < len; i++){
+      var xPosition = linePosition.x + linePosition.distance * verticalText[i][2] - 10
+
+      // create the text in the right position
+      var title = s.paper.text(xPosition, linePosition.y - 100, verticalText[i][0]).attr({"text-anchor":"end", fontSize: '2.0em', opacity: 0})
+      var description = s.paper.text(xPosition, linePosition.y - 70, verticalText[i][1]).attr({"text-anchor":"end", fontSize: '1.2em', opacity: 0})
+
+      // fade in opacity delay
+      fadeInDelay(title, verticalText[i][2])
+      fadeInDelay(description, verticalText[i][2])
+
+      // add to Snap groups
+      // titles.add(title)
+      // descriptions.add(description)
+
+      renderTextExtenders(verticalText[i][2]);
+    }
+
+  }
+
+  // this renders the line extender to reach the text on the lineNumber
+  var renderTextExtenders = function(lineNumber){
+    var xPosition = linePosition.x + linePosition.distance * lineNumber
+
+    // timing function to sync vertical line creation
+    // a small hack due to reusing the buildVerticalLines function, which uses the number of lines to create the setTimeout
+    setTimeout(function(){ buildVerticalLines(xPosition, linePosition.y - 125, 2, 125, 1, linePosition.distance)}, lineNumber * 40);
+  }
+
   // ROUTER FUNCTION
   function draw(style, lines, text){
     if(style ==="horizontal"){
@@ -110,6 +147,7 @@ window.onload = function(){
       buildVerticalLines(linePosition.x + 1 + 3 * linePosition.distance, linePosition.y + linePosition.mainLineHeight, 1, linePosition.miniLineHeight, lines - 3, linePosition.distance);
 
       // text
+      renderVerticalText(verticalText)
 
     } else if (style==="vertical"){
       buildHorizontalLines(linePosition.x, linePosition.y, 2, linePosition.mainLineHeight, lines, linePosition.distance)
@@ -131,7 +169,7 @@ window.onload = function(){
     }
   }
 
-  // SAMPLE TEXT
+  // TEXT
   var radialText = {
     leftTitle: 'Sun Panels',
     leftDescription: 'Panels harness power throughout the day',
@@ -139,10 +177,14 @@ window.onload = function(){
     rightDescription: 'The battery stores energy for later use'
   }
 
-
-  var verticalText = {
-
-  }
+  // Current Text API
+  // {title, description, line position number to draw on}
+  var verticalText = [
+    ['146hp', 'Lexus CT200H', 5],
+    ['146hp', 'Lexus CT200H', 12],
+    ['146hp', 'Lexus CT200H', 18],
+    ['175hp', 'Audi A3 eTron', 37]
+  ]
 
   // CONFIG POSITIONS
   var radial = {
@@ -160,12 +202,12 @@ window.onload = function(){
     // TODO: mainMiniOffset is the number of lines offset
   }
 
-   // UNCOMMENT TO SEE DIFFERENT STYLES
-   draw("horizontal", 150)
+   // SEE DIFFERENT STYLES
+   draw("horizontal", 50)
    // draw("vertical", 20)
    // draw("halfRadial", 25, radialText)
    // draw("fullRadial", 72, radialText)
-   // draw("halfRadialMobile", 25, radialText)
+   // draw("halfRadialMobile", 75, radialText)
    // draw("halfRadialMobile", 120, radialText)
 
 }
