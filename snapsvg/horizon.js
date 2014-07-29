@@ -10,13 +10,21 @@ window.onload = function(){
       var totalDegrees = 360;
     };
 
-    for(i=0; i<numberOfLines; i++){
+    for(i=0; i<=numberOfLines; i++){
       var degree = ((totalDegrees / numberOfLines) * i) + 90
       var line = s.paper.rect(500, 400, 2, 350).attr({opacity:0, transform:"rotate(" + degree + " 501 400)"})
+
+      // color the first half of the radial lines
+      if (i < (numberOfLines / 2)){
+        line.attr({fill: g, stroke: g})
+      }
+
       fadeInDelay(line, i);
     }
 
     var centerMask = s.paper.circle(500, 400, 160).attr({ fill: "#fff"})
+
+    // add in image of car in center (svg path)
   }
 
   // g is a linear gradient, relative to the element applied
@@ -59,7 +67,7 @@ window.onload = function(){
     line.animate({opacity:1}, 600, mina.easeout)
   }
 
-  var text = function(){
+  var radialText = function(){
     // var
 
   }
@@ -76,21 +84,23 @@ window.onload = function(){
 
       // (x + height, y, width, height, lines, distance)
       buildHorizontalLines(130, 146, 1, 30, lines, 20)
-    } else if(style==="halfradial"){
+    } else if(style==="halfRadial"){
       radialFlare("half", lines)
       extendedCenterLines()
       radialText()
-    } else if(style==="fullradial"){
-      radialFlare("full", lines)
+    } else if(style==="fullRadial"){
+      radialFlare("full", lines) // may need to make these calls more flexible, like the lines
       extendedCenterLines()
+    } else if(style==="halfRadialMobile"){
+      radialFlare("half", lines)
     }
   }
 
-
-   draw("horizontal", 50)
+   // UNCOMMENT TO SEE DIFFERENT STYLES
+   // draw("horizontal", 50)
    // draw("vertical", 20)
-   // draw("halfradial", 50)
-   // draw("fullradial", 50)
-   // text(mobile)
+   draw("halfRadial", 50)
+   // draw("fullRadial", 50)
+   // draw("halfRadialMobile", 20)
 
 }
