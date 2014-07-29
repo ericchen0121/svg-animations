@@ -17,6 +17,8 @@ window.onload = function(){
       // color the first half of the radial lines
       if (i < (numberOfLines / 2)){
         line.attr({fill: g, stroke: g})
+      } else {
+        line.attr({fill: gDark, stroke: gDark})
       }
 
       fadeInDelay(line, i);
@@ -29,12 +31,13 @@ window.onload = function(){
 
   // g is a linear gradient, relative to the element applied
   var g = s.paper.gradient("r(0,1,1)#cf5300-#fff")
+  var gDark = s.paper.gradient("r(0,1,1)#000-#fff")
 
   var extendedCenterLines = function(){
     var centerLeftLine = s.rect(500, 400, 2, 425).attr({transform:"rotate(90 501 400)", fill: g, stroke: g})
-    var centerRightLine= s.rect(500, 400, 2, 425).attr({transform:"rotate(270 501 400)", fill: g, stroke: g})
+    var centerRightLine= s.rect(500, 400, 2, 425).attr({transform:"rotate(270 501 400)", fill: gDark, stroke: gDark})
     s.paper.circle(75, 400, 4).attr({fill: "#cf5300"})
-    s.paper.circle(925, 400, 4).attr({fill: "#cf5300"})
+    s.paper.circle(925, 400, 4).attr({fill: "#000"})
 
     // create a group for setting opacity to 0, then call fadeInDelay(group, 500)
   }
@@ -99,8 +102,8 @@ window.onload = function(){
    // UNCOMMENT TO SEE DIFFERENT STYLES
    // draw("horizontal", 50)
    // draw("vertical", 20)
-   draw("halfRadial", 50)
+   // draw("halfRadial", 25)
    // draw("fullRadial", 50)
-   // draw("halfRadialMobile", 20)
+   draw("halfRadialMobile", 20)
 
 }
