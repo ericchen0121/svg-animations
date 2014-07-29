@@ -52,11 +52,11 @@ window.onload = function(){
   // HELPER ANIMATION FUNCTIONS
 
   function fadeInDelay(line, i){
-    setTimeout( function(){fadeIn(line)}, i * 20);
+    setTimeout( function(){fadeIn(line)}, i * 40);
   }
 
   function fadeIn(line){
-    line.animate({opacity:1}, 1250, mina.easeout)
+    line.animate({opacity:1}, 600, mina.easeout)
   }
 
   var text = function(){
@@ -65,7 +65,7 @@ window.onload = function(){
   }
 
   // ROUTER FUNCTION
-  function draw(style, lines){
+  function draw(style, lines, text){
     if(style ==="horizontal"){
       buildVerticalLines(100, 145, 2, 150, lines, 20);
 
@@ -79,6 +79,7 @@ window.onload = function(){
     } else if(style==="halfradial"){
       radialFlare("half", lines)
       extendedCenterLines()
+      radialText()
     } else if(style==="fullradial"){
       radialFlare("full", lines)
       extendedCenterLines()
@@ -86,7 +87,7 @@ window.onload = function(){
   }
 
 
-   // draw("horizontal", 50)
+   draw("horizontal", 50)
    // draw("vertical", 20)
    // draw("halfradial", 50)
    // draw("fullradial", 50)
