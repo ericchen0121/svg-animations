@@ -208,25 +208,30 @@ window.onload = function(){
   }
 
   // ROUTER FUNCTION
-  function draw(style, lines, text){
+    // build functions have these params: (x + height, y, width, height, lines, distance)
+  function draw(style, lines, config){
     if(style ==="leftRight"){
       // main lines
       buildVerticalLines(linePosition.x, linePosition.y, 2, linePosition.mainLineHeight, lines, linePosition.distance);
-
       // lower lines
       buildVerticalLines(linePosition.x + 1 + 3 * linePosition.distance, linePosition.y + linePosition.mainLineHeight, 1, linePosition.miniLineHeight, lines - 3, linePosition.distance);
-
       // text
-      renderLeftRightText(verticalText)
-
+      renderLeftRightText(config.text)
+      // bold line
+      setTimeout(function(){
+          buildVerticalLines(linePosition.x + config.boldLine * linePosition.distance, linePosition.y - 135, 4, linePosition.mainLineHeight + 135 , 1, linePosition.distance)
+        }, config.boldLine * 40);
     } else if (style==="topDown"){
-      // (x + height, y, width, height, lines, distance)
       // main lines
       buildHorizontalLines(linePosition.x, linePosition.y, 2, linePosition.mainLineHeight, lines, linePosition.distance)
-
       // lower lines
       buildHorizontalLines(linePosition.x + linePosition.miniLineHeight, linePosition.y + 1, 1, linePosition.miniLineHeight, lines, linePosition.distance)
-      renderTopDownText(chargeTimeText)
+      // text
+      renderTopDownText(config.text)
+      // bold line
+      setTimeout(function(){
+          buildHorizontalLines(linePosition.x + linePosition.miniLineHeight * 2, linePosition.y + linePosition.distance * config.boldLine, 4, linePosition.mainLineHeight + linePosition.miniLineHeight * 2, 1, linePosition.distance)
+        }, config.boldLine * 40);
     } else if(style==="halfRadial"){
       radialFlare("half", lines)
       extendedCenterLines()
@@ -251,21 +256,38 @@ window.onload = function(){
   }
 
   // Current Text API
-  // {title, description, line position number to draw on}
-  var verticalText = [
-    ['146hp', 'Lexus CT200H', 5],
-    ['146hp', 'Mercedes Benz', 12],
-    ['146hp', 'BMW', 18],
-    ['146hp', 'BMW i3', 22],
-    ['175hp', 'Audi A3 eTron', 49]
-  ]
+  // the the last value in text will be bolded.
+  // boldLine is the index of the line to be bolded.
+  var config1 = {
+    boldLine: 49,
+    text: [
+            ['146hp', 'Lexus CT200H', 5],
+            ['146hp', 'Mercedes Benz', 12],
+            ['146hp', 'BMW', 18],
+            ['146hp', 'BMW i3', 22],
+            ['175hp', 'Audi A3 eTron', 49]
+          ]
+  }
 
-  var chargeTimeText = [
-    ['5.5h', 'iPad', 2],
-    ['3h', 'Laptop', 8],
-    ['2h', 'iPhone', 19],
-    ['2.3h', 'Audi A3 eTron', 13]
-  ]
+  var config2 = {
+    boldLine: 24,
+    text: [
+            ['8 TDs', 'Ryan Tannehill', 7],
+            ['20 TDs', 'Tom Brady', 19],
+            ['30 TDs', 'Peyton Manning', 29],
+            ['22 TDs', 'Joe Flacco', 24],
+          ]
+  }
+
+  var config3 = {
+    boldLine: 22,
+    text: [
+            ['5.5h', 'iPad', 2],
+            ['3h', 'Laptop', 8],
+            ['2h', 'iPhone', 25],
+            ['2.3h', 'Audi A3 eTron', 22]
+          ]
+  }
 
   // CONFIG POSITIONS
   var radial = {
@@ -284,8 +306,9 @@ window.onload = function(){
   }
 
    // SEE DIFFERENT STYLES
-   draw("leftRight", 50)
-   // draw("topDown", 20)
+    //"leftRight" config files will
+   // draw("leftRight", 50, config1)
+   draw("topDown", 30, config3)
    // draw("halfRadial", 25, radialText)
    // draw("fullRadial", 72, radialText)
    // draw("halfRadialMobile", 25, radialText)
