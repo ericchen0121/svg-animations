@@ -6,11 +6,11 @@ window.onload = function(){
   // HELPER ANIMATION FUNCTIONS
 
   function fadeInDelay(element, i){
-    setTimeout( function(){fadeIn(element)}, i * 40);
+    setTimeout( function(){ fadeIn(element) }, i * speed.offset);
   }
 
   function fadeIn(element){
-    element.animate({opacity:1}, 600, mina.easeout)
+    element.animate({ opacity: 1 }, speed.animationTime, mina.easeout)
   }
 
   // RADIAL FLARE CREATION
@@ -37,14 +37,14 @@ window.onload = function(){
       fadeInDelay(line, i);
     }
 
-    // var centerMask = s.paper.circle(radial.cx, radial.cy, radial.r / 2.2).attr({ fill: "#fff"})
+    var centerMask = s.paper.circle(radial.cx, radial.cy, radial.r / 2.2).attr({ fill: "#fff"})
 
     // add in image of car in center (svg path)
   }
 
   // g is a linear gradient, relative to the element applied
-  var g = s.paper.gradient("r(0,1,1)#cf5300-#fff:60")
-  var gDark = s.paper.gradient("r(0,1,1)#000-#fff:60")
+  var g = s.paper.gradient("r(0,1,1)#cf5300-#fff")
+  var gDark = s.paper.gradient("r(0,1,1)#000-#fff")
 
   var extendedCenterLines = function(){
     var extension = 70
@@ -251,7 +251,7 @@ window.onload = function(){
   // the the last value in text will be bolded.
   // boldLine is the index of the line to be bolded.
 
-  // TEXT
+  // CONFIG TEXT
   var radialText = {
     leftTitle: 'Sun Panels',
     leftDescription: 'Panels harness power throughout the day',
@@ -307,12 +307,19 @@ window.onload = function(){
     // TODO: mainMiniOffset is the number of lines offset
   }
 
-   // SEE DIFFERENT STYLES
+  var speed = {
+    offset: 40,
+    animationTime: 600
+  }
+
+  // DIFFERENT STYLES
+  // leftRight, topDown, halfRadial, fullRadial, halfRadialMobile
+
     //"leftRight" config files will
    // draw("leftRight", 50, config1)
    // draw("topDown", 30, config3)
-   // draw("halfRadial", 25, radialText)
-   draw("fullRadial", 72, radialText)
+   draw("halfRadial", 25, radialText)
+   // draw("fullRadial", 72, radialText)
    // draw("halfRadialMobile", 25, radialText)
    // draw("halfRadialMobile", 75, radialText)
 
