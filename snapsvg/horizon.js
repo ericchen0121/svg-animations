@@ -235,17 +235,21 @@ window.onload = function(){
     } else if(style==="halfRadial"){
       radialFlare("half", lines)
       extendedCenterLines()
-      renderRadialText(text, "outside")
+      renderRadialText(config, "outside")
     } else if(style==="fullRadial"){
       radialFlare("full", lines) // may need to make these calls more flexible, like the lines
       extendedCenterLines()
-      renderRadialText(text, "outside")
+      renderRadialText(config, "outside")
     } else if(style==="halfRadialMobile"){
       radial.r = 200
       radialFlare("half", lines)
-      renderRadialText(text, "inside")
+      renderRadialText(config, "inside")
     }
   }
+
+  // Current Text API
+  // the the last value in text will be bolded.
+  // boldLine is the index of the line to be bolded.
 
   // TEXT
   var radialText = {
@@ -255,9 +259,6 @@ window.onload = function(){
     rightDescription: 'The battery stores energy for later use'
   }
 
-  // Current Text API
-  // the the last value in text will be bolded.
-  // boldLine is the index of the line to be bolded.
   var config1 = {
     boldLine: 49,
     text: [
@@ -289,6 +290,7 @@ window.onload = function(){
           ]
   }
 
+
   // CONFIG POSITIONS
   var radial = {
     cx: 800,
@@ -308,9 +310,9 @@ window.onload = function(){
    // SEE DIFFERENT STYLES
     //"leftRight" config files will
    // draw("leftRight", 50, config1)
-   draw("topDown", 30, config3)
+   // draw("topDown", 30, config3)
    // draw("halfRadial", 25, radialText)
-   // draw("fullRadial", 72, radialText)
+   draw("fullRadial", 72, radialText)
    // draw("halfRadialMobile", 25, radialText)
    // draw("halfRadialMobile", 75, radialText)
 
