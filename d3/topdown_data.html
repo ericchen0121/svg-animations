@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.chart rect {
+  fill: gray
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+
+</style>
+<svg class="chart"></svg>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var data = [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}]
+
+var width = 1000,
+    barHeight = 250;
+
+// scale function which takes a data domain and scales with the visual domain
+var scale = d3.scale.linear()
+    .domain([d3.min(data), d3.max(data)])
+    .range([0, width]);
+
+var chart = d3.select(".chart")
+    .attr("width", width)
+
+var bar = chart.selectAll("rect")
+    .data(data)
+  .enter().append("rect")
+    .attr("width", 2)
+    .attr("height", barHeight)
+    .attr("x", function(d, i) { return barDistance * i } );
+
+
+
+// bar.append("text")
+//     .attr("x", function(d) { return x(d) - 3; })
+//     .attr("y", barHeight / 2)
+//     .attr("dy", ".35em")
+//     .text(function(d) { return d; });
+
+var svgns = "http://www.w3.org/2000/svg";
+for (var x = 0; x < 5000; x += 50) {
+    for (var y = 0; y < 3000; y += 50) {
+        var rect = document.createElementNS(svgns, 'rect');
+        rect.setAttributeNS(null, 'x', x);
+        rect.setAttributeNS(null, 'y', y);
+        rect.setAttributeNS(null, 'height', '50');
+        rect.setAttributeNS(null, 'width', '50');
+        rect.setAttributeNS(null, 'fill', '#'+Math.round(0xffffff * Math.random()).toString(16));
+        document.getElementById('chart').appendChild(rect);
+    }
+}
+
+</script>
