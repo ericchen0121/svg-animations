@@ -41,7 +41,7 @@ var chart = d3.select(".chart")
 
 var bar = chart.selectAll("g")
     .data(data)
-  .enter().append("g")
+    .enter().append("g")
           .attr("transform", function(d, i) { return "translate(" + barDistance * i + ", 0)" });
 
 bar.append("rect")
@@ -56,17 +56,20 @@ bar.append("text")
     .text( function(d) { return d.label; });
 
 
+var opacityFade = function() {
+  bar.each(opacityFadeCallback)
+}
 // callback function for d3.selection.each iterator
-function opacityFade(d, i) {
+function opacityFadeCallback(d, i) {
   d3.select(this).transition()
     .style('opacity', 0)
-    .duration(200 * i)
+    .duration(500)
+    .delay(200 * i)
 }
 
+
 button = document.querySelector('button')
-button.addEventListener('click', function(){
-  bar.each(opacityFade)
-})
+button.addEventListener('click', opacityFade)
 
 // bar.append("text")
 //     .attr("x", function(d) { return x(d) - 3; })
