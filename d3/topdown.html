@@ -13,12 +13,18 @@
 }
 
 </style>
+
 <svg class="chart"></svg>
 <button>opacity</button>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-var data = ['test', 8, 15, 16, 23, 42];
+var data = [{label: 'test', class: "label-above"},
+            {label: 'BMW', class: "label-above"},
+            {label: '', class: "label-above"},
+            {label: 'Audi A5', class: "label-above"},
+            {label: 'Mercedes Benz', class: "label-above"},
+            {label: 42, class: "label-above"}];
 
 var width = 1000,
     barHeight = 250,
@@ -38,22 +44,28 @@ var bar = chart.selectAll("g")
   .enter().append("g")
           .attr("transform", function(d, i) { return "translate(" + barDistance * i + ", 0)" });
 
-
 bar.append("rect")
     .attr("width", 2)
     .attr("height", barHeight)
 
 
 bar.append("text")
-    .attr("y", barHeight / 2)
+    .attr("y", 10)
     .attr("dy", ".35em")
-    .text(function(d) { return d; });
+    .attr("class", function(d) { return d.class })
+    .text( function(d) { return d.label; });
+
+
+// callback function for d3.selection.each iterator
+function opacityFade(d, i) {
+  d3.select(this).transition()
+    .style('opacity', 0)
+    .duration(200 * i)
+}
 
 button = document.querySelector('button')
 button.addEventListener('click', function(){
-  bar.transition()
-    .style('opacity', 0)
-    .duration(1500)
+  bar.each(opacityFade)
 })
 
 // bar.append("text")
