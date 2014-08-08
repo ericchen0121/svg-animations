@@ -7,8 +7,8 @@
 }
 
 .chart text {
-  fill: red;
-  font: 10px sans-serif;
+  fill: black;
+  font: 18px sans-serif;
   text-anchor: end;
 }
 
@@ -19,10 +19,10 @@
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-var data = [{},
+var datameer = [{},
             {},
             {},
-            {labelOne: 'BMW', labelTwo: '128HP', class: "label-above"},
+            {labelOne: 'BMW', labelTwo: '128HP', class: "label-above", position: 'top'},
             {},
             {},
             {},
@@ -33,7 +33,7 @@ var data = [{},
             {},
             {labelOne: 'Mercedes Benz', labelTwo: '168HP', class: "label-above"},
             {},
-            {labelOne: 'Audi A5', labelTwo: '202HP', class: "label-above"}]
+            {labelOne: 'Audi A5', labelTwo: '202HP', class: "label-above", position: 'top'}]
 
 var width = 1000,
     barHeight = 250,
@@ -51,50 +51,61 @@ var chart = d3.select(".chart")
     .attr("height", 800)
 
 // attach the data
-var bar = chart.selectAll("g")
-    .data(data)
-    // and create groups spaced
-    .enter().append("g")
-          .attr("transform", function(d, i) { return "translate(" + barDistance * i + ", 0)" });
 
 // create rectangles for each piece of data
-bar.append("rect")
-    .attr("width", 3)
-    .attr("height", barHeight)
+function drawTopDown(data) {
 
+  var bar = chart.selectAll("g")
+      .data(data)
+      // and create groups spaced
+      .enter().append("g")
+            .attr("transform", function(d, i) { return "translate(" + barDistance * i + ", 100)" })
+            .style('opacity', 0.1);
 
-// attach text to each piece of data
-bar.append("text")
-    .attr("y", barHeight + 20)
-    .attr("dy", ".35em")
-    .attr("class", function(d) { return d.class })
-    .text( function(d) { return d.labelOne });
+  bar.append("rect")
+      .attr("width", 3)
+      .attr("height", barHeight)
 
-bar.append("text")
-    .attr("y", barHeight + 35)
-    .attr("dy", ".35em")
-    .attr("class", function(d) { return d.class })
-    .text( function(d) { return d.labelTwo });
+  // attach text labels to each group
+  // d.labelOne is the top label, based on the y height attribute
+  bar.append("text")
+      .attr("y", barHeight + 20)
+      .attr("dy", ".35em")
+      .attr("class", function(d) { return d.class })
+      .text( function(d) { return d.labelOne });
 
-var opacityFadeStagger = function() {
-  bar.each(opacityFadeCallback)
+  bar.append("text")
+      .attr("y", barHeight + 35)
+      .attr("dy", ".35em")
+      .attr("class", function(d) { return d.class })
+      .text( function(d) { return d.labelTwo });
+
+  // loop thru and move up or down conditionally
+  var labels = chart.selectAll("text")
+  labels.each(labelsPosition)
+
+  function labelsPosition(d, i) {
+    if( d.position === 'top') {
+      d3.select(this)
+        .attr("transform", "translate( 0, -" + (barHeight + 60) + ")")
+    }
+  }
+
+  var opacityFadeStagger = function() {
+    bar.each(opacityFadeCallback)
+  }
+  // callback function for d3.selection.each iterator
+  function opacityFadeCallback(d, i) {
+    d3.select(this).transition()
+      .style('opacity', 1)
+      .duration(500)
+      .delay(200 * i)
+  }
+
+  button = document.querySelector('button')
+  button.addEventListener('click', opacityFadeStagger)
 }
-// callback function for d3.selection.each iterator
-function opacityFadeCallback(d, i) {
-  d3.select(this).transition()
-    .style('opacity', 0)
-    .duration(500)
-    .delay(200 * i)
-}
 
-
-button = document.querySelector('button')
-button.addEventListener('click', opacityFadeStagger)
-
-// bar.append("text")
-//     .attr("x", function(d) { return x(d) - 3; })
-//     .attr("y", barHeight / 2)
-//     .attr("dy", ".35em")
-//     .text(function(d) { return d; });
+drawTopDown(datameer);
 
 </script>
