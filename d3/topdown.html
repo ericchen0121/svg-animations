@@ -3,60 +3,80 @@
 <style>
 
 .chart rect {
-  fill: steelblue;
+  fill: gray;
 }
 
 .chart text {
-  fill: black;
+  fill: red;
   font: 10px sans-serif;
   text-anchor: end;
 }
 
 </style>
 
-<svg class="chart"></svg>
 <button>opacity</button>
+<svg class="chart"></svg>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-var data = [{label: 'test', class: "label-above"},
-            {label: 'BMW', class: "label-above"},
-            {label: '', class: "label-above"},
-            {label: 'Audi A5', class: "label-above"},
-            {label: 'Mercedes Benz', class: "label-above"},
-            {label: 42, class: "label-above"}];
+var data = [{},
+            {},
+            {},
+            {labelOne: 'BMW', labelTwo: '128HP', class: "label-above"},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {labelOne: 'Mercedes Benz', labelTwo: '168HP', class: "label-above"},
+            {},
+            {labelOne: 'Audi A5', labelTwo: '202HP', class: "label-above"}]
 
 var width = 1000,
     barHeight = 250,
-    numberBars = 25,
-    barDistance = 30;
+    barDistance = 50;
 
 
-var x = d3.scale.linear()
-    .domain([0, d3.max(data)])
-    .range([0, width]);
+// TODO: use the linear scale to make distance
+// var x = d3.scale.linear()
+//     .domain([0, d3.max(data)])
+//     .range([0, width]);
 
+// selection
 var chart = d3.select(".chart")
-    .attr("width", width)
+    .attr("width", "100%")
+    .attr("height", 800)
 
+// attach the data
 var bar = chart.selectAll("g")
     .data(data)
+    // and create groups spaced
     .enter().append("g")
           .attr("transform", function(d, i) { return "translate(" + barDistance * i + ", 0)" });
 
+// create rectangles for each piece of data
 bar.append("rect")
-    .attr("width", 2)
+    .attr("width", 3)
     .attr("height", barHeight)
 
 
+// attach text to each piece of data
 bar.append("text")
-    .attr("y", 10)
+    .attr("y", barHeight + 20)
     .attr("dy", ".35em")
     .attr("class", function(d) { return d.class })
-    .text( function(d) { return d.label; });
+    .text( function(d) { return d.labelOne });
 
+bar.append("text")
+    .attr("y", barHeight + 35)
+    .attr("dy", ".35em")
+    .attr("class", function(d) { return d.class })
+    .text( function(d) { return d.labelTwo });
 
-var opacityFade = function() {
+var opacityFadeStagger = function() {
   bar.each(opacityFadeCallback)
 }
 // callback function for d3.selection.each iterator
@@ -69,7 +89,7 @@ function opacityFadeCallback(d, i) {
 
 
 button = document.querySelector('button')
-button.addEventListener('click', opacityFade)
+button.addEventListener('click', opacityFadeStagger)
 
 // bar.append("text")
 //     .attr("x", function(d) { return x(d) - 3; })
