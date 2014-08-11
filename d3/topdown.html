@@ -251,7 +251,7 @@ function drawTopDown(data) {
 function drawRadialChart(data){
   // configuration defaults
   var width = 1000,
-      radialDegrees = 360,
+      radialDegrees = 180,
       barHeight = 200,
       centerLineExtenders = true,
       totalLines = data.length,
@@ -270,6 +270,7 @@ function drawRadialChart(data){
       // centerX + (1/2) * barWidth
       return "rotate(" + rotateDegree + " " + (centerX + 0.5)+ ", " + centerY + ")"
     })
+    .style('opacity', 0.1)
 
   bar.append("rect")
     .attr("width", 1)
@@ -277,6 +278,23 @@ function drawRadialChart(data){
     .attr("x", centerX)
     .attr("y", centerY)
 
+  var opacityFadeStagger = function() {
+    // d3 selector#each method which runs the callback function for every item in the array
+    bar.each(opacityFadeCallback)
+  }
+
+  // callback function for d3.selection.each iterator
+  // this exposes the datum (d) and index (i) of the selector
+  function opacityFadeCallback(d, i) {
+    d3.select(this).transition()
+      .style('opacity', 1)
+      .duration(150)
+      .delay(30 * i)
+  }
+
+  // add button click handler to trigger the opacity animation
+  // change this later to run automatically
+  $('button').click(opacityFadeStagger)
 
 }
 
