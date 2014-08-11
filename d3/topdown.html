@@ -21,7 +21,7 @@
 
 <script>
 
-var datameer = [{},
+var horsepowerData = [{},
             {},
             {},
             {},
@@ -42,7 +42,7 @@ var datameer = [{},
             {},
             {},
             {},
-            {labelOne: '134HP', labelTwo: 'Lexus CT 200H', position: 'top'},
+            {labelOne: '134HP', labelTwo: 'Lexus CT 200H', labelPosition: 'top'},
             {},
             {},
             {},
@@ -55,14 +55,14 @@ var datameer = [{},
             {},
             {},
             {},
-            {labelOne: '170HP', labelTwo: 'BMW i3', position: 'bottom'},
+            {labelOne: '170HP', labelTwo: 'BMW i3', labelPosition: 'bottom'},
             {},
             {},
             {},
             {},
             {},
             {},
-            {labelOne: '177HP', labelTwo: 'Mercedes B class ED', position: 'top'},
+            {labelOne: '177HP', labelTwo: 'Mercedes B class ED', labelPosition: 'top'},
             {},
             {},
             {},
@@ -75,7 +75,7 @@ var datameer = [{},
             {},
             {},
             {},
-            {labelOne: '180HP', labelTwo: 'BMW 320i', position: 'bottom'},
+            {labelOne: '180HP', labelTwo: 'BMW 320i', labelPosition: 'bottom'},
             {},
             {},
             {},
@@ -100,29 +100,44 @@ var datameer = [{},
             {},
             {},
             {},
-            {labelOne: '204HP', labelTwo: 'A3 e-tron', position: 'top'}
+            {labelOne: '204HP', labelTwo: 'A3 e-tron', labelPosition: 'top', labelStyle: 'emphasis'}
             ]
 
-// default options
-var width = 1000,
+var sunData = [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+]
+
+function drawTopDown(data) {
+
+  // default options
+  var width = 1000,
     barHeight = 150,
     barDistance = 15;
 
-
-// TODO: use the linear scale to make distance
-// var x = d3.scale.linear()
-//     .domain([0, d3.max(data)])
-//     .range([0, width]);
-
-// selection
-var chart = d3.select(".chart")
+  // selection
+  var chart = d3.select(".chart")
     .attr("width", "100%")
     .attr("height", 800)
-
-// attach the data
-
-// create rectangles for each piece of data
-function drawTopDown(data) {
 
   // create bar groups
   var bar = chart.selectAll("g")
@@ -142,6 +157,7 @@ function drawTopDown(data) {
   // TODO: add a class and CSS style
   bar.append("rect")
       .attr("width", 1)
+      // the total height of the extender up and down is 70 pixels, 35 below and above
       .attr("height", barHeight + 70)
       .attr("transform", "translate(1, -35)")
       .style('opacity', 0.2)
@@ -161,19 +177,57 @@ function drawTopDown(data) {
       .attr("class", function(d) { return d.class })
       .text( function(d) { return d.labelTwo });
 
+  // bar extenders to Text Position
+  bar.each(barExtender)
+
+  function barExtender(d, i){
+    if(d.labelPosition === 'top') {
+      d3.select(this)
+        .append("rect")
+        .attr("width", 1)
+        .attr("height", 100)
+        .attr("transform", "translate(1, -100)")
+        .style('opacity', 0.7)
+        .style('fill', 'gray')
+    } else if (d.labelPosition === 'bottom'){
+      d3.select(this)
+        .append("rect")
+        .attr("width", 1)
+        .attr("height", 100)
+        .attr("transform", "translate(1," + barHeight + ")")
+        .style('opacity', 0.7)
+        .style('fill', 'gray')
+    }
+  }
+
+  // Text Positioning
   // loop thru and move up or down conditionally
   // d3 selectAll "text" nodes
   var labels = chart.selectAll("text")
+
+  // position all labels
   labels.each(labelsPosition)
+
+  // emphasize the label with emphasis style
+  labels.each(labelsStyle)
 
   function labelsPosition(d, i) {
     // default position is 'bottom', and is positioned as such
-    if( d.position === 'top') {
+    if( d.labelPosition === 'top') {
       d3.select(this)
         .attr("transform", "translate( 0, -" + (barHeight + 200) + ")")
     }
   }
 
+  function labelsStyle(d, i) {
+    if( d.labelStyle === 'emphasis' ) {
+      d3.select(this)
+        .attr("transform", "translate( 0, -" + (barHeight + 270) + ")")
+
+    }
+  }
+
+  //
   var opacityFadeStagger = function() {
     // d3 selector#each method which runs the callback function for every item in the array
     bar.each(opacityFadeCallback)
@@ -194,8 +248,39 @@ function drawTopDown(data) {
 }
 
 
+function drawRadialChart(data){
+  // configuration defaults
+  var width = 1000,
+      radialDegrees = 360,
+      barHeight = 200,
+      centerLineExtenders = true,
+      totalLines = data.length,
+      centerX = 300,
+      centerY = 300;
+
+  var chart = d3.select(".chart")
+    .attr("width", "100%")
+    .attr("height", 800)
+
+   var bar = chart.selectAll("g")
+    .data(data)
+    .enter().append("g")
+    .attr("transform", function(d, i) {
+      var rotateDegree = (radialDegrees / (totalLines - 1)) * i  + 90;
+      // centerX + (1/2) * barWidth
+      return "rotate(" + rotateDegree + " " + (centerX + 0.5)+ ", " + centerY + ")"
+    })
+
+  bar.append("rect")
+    .attr("width", 1)
+    .attr("height", barHeight)
+    .attr("x", centerX)
+    .attr("y", centerY)
+
+
+}
 
 // call the function
-drawTopDown(datameer);
-
+// drawTopDown(horsepowerData);
+drawRadialChart(sunData);
 </script>
