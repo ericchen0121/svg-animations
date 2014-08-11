@@ -3,7 +3,7 @@
 <style>
 
 .chart rect {
-  fill: gray;
+  fill: #e75300;
 }
 
 .chart text {
@@ -17,12 +17,13 @@
 <button>opacity</button>
 <svg class="chart"></svg>
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+
 <script>
 
 var datameer = [{},
             {},
             {},
-            {labelOne: 'BMW', labelTwo: '128HP', class: "label-above", position: 'top'},
             {},
             {},
             {},
@@ -31,13 +32,81 @@ var datameer = [{},
             {},
             {},
             {},
-            {labelOne: 'Mercedes Benz', labelTwo: '168HP', class: "label-above"},
             {},
-            {labelOne: 'Audi A5', labelTwo: '202HP', class: "label-above", position: 'top'}]
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {labelOne: '134HP', labelTwo: 'Lexus CT 200H', position: 'top'},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {labelOne: '170HP', labelTwo: 'BMW i3', position: 'bottom'},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {labelOne: '177HP', labelTwo: 'Mercedes B class ED', position: 'top'},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {labelOne: '180HP', labelTwo: 'BMW 320i', position: 'bottom'},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {labelOne: '204HP', labelTwo: 'A3 e-tron', position: 'top'}
+            ]
 
+// default options
 var width = 1000,
-    barHeight = 250,
-    barDistance = 50;
+    barHeight = 150,
+    barDistance = 15;
 
 
 // TODO: use the linear scale to make distance
@@ -55,57 +124,78 @@ var chart = d3.select(".chart")
 // create rectangles for each piece of data
 function drawTopDown(data) {
 
+  // create bar groups
   var bar = chart.selectAll("g")
       .data(data)
-      // and create groups spaced
+      // and create groups spaced at distance apart with the translate function
+      // set the opacity to the starting opacity
       .enter().append("g")
-            .attr("transform", function(d, i) { return "translate(" + barDistance * i + ", 100)" })
+            .attr("transform", function(d, i) { return "translate(" + barDistance * i + ", 300)" })
             .style('opacity', 0.1);
 
+  // main lines, styled with CSS
   bar.append("rect")
-      .attr("width", 3)
+      .attr("width", 1.5)
       .attr("height", barHeight)
+
+  // line ascenders and descenders are drawn behind the main bars
+  // TODO: add a class and CSS style
+  bar.append("rect")
+      .attr("width", 1)
+      .attr("height", barHeight + 70)
+      .attr("transform", "translate(1, -35)")
+      .style('opacity', 0.2)
+      .style('fill', 'gray')
 
   // attach text labels to each group
   // d.labelOne is the top label, based on the y height attribute
   bar.append("text")
-      .attr("y", barHeight + 20)
+      .attr("y", barHeight + 90)
       .attr("dy", ".35em")
       .attr("class", function(d) { return d.class })
       .text( function(d) { return d.labelOne });
 
   bar.append("text")
-      .attr("y", barHeight + 35)
+      .attr("y", barHeight + 120)
       .attr("dy", ".35em")
       .attr("class", function(d) { return d.class })
       .text( function(d) { return d.labelTwo });
 
   // loop thru and move up or down conditionally
+  // d3 selectAll "text" nodes
   var labels = chart.selectAll("text")
   labels.each(labelsPosition)
 
   function labelsPosition(d, i) {
+    // default position is 'bottom', and is positioned as such
     if( d.position === 'top') {
       d3.select(this)
-        .attr("transform", "translate( 0, -" + (barHeight + 60) + ")")
+        .attr("transform", "translate( 0, -" + (barHeight + 200) + ")")
     }
   }
 
   var opacityFadeStagger = function() {
+    // d3 selector#each method which runs the callback function for every item in the array
     bar.each(opacityFadeCallback)
   }
+
   // callback function for d3.selection.each iterator
+  // this exposes the datum (d) and index (i) of the selector
   function opacityFadeCallback(d, i) {
     d3.select(this).transition()
       .style('opacity', 1)
-      .duration(500)
-      .delay(200 * i)
+      .duration(150)
+      .delay(30 * i)
   }
 
-  button = document.querySelector('button')
-  button.addEventListener('click', opacityFadeStagger)
+  // add button click handler to trigger the opacity animation
+  // change this later to run automatically
+  $('button').click(opacityFadeStagger)
 }
 
+
+
+// call the function
 drawTopDown(datameer);
 
 </script>
