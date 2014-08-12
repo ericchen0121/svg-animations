@@ -25,12 +25,26 @@ svg {
 <button id="radial-static">radial static</button>
 <button id="animate">animate</button>
 <button id="clear">clear</button>
-<svg class="chart"></svg>
+<div id="container">
+  <!-- <svg class="chart" width="800" height="600"
+    viewbox ="0 0 800 600"
+    preserveAspectRatio="xMidYMid"></svg> -->
+    <svg class="chart"></svg>
+</div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 
 <script>
 $(document).ready(function() {
+
+  // var chart = $(".chart"),
+  //   aspect = chart.width() / chart.height(),
+  //   container = chart.parent();
+  // $(window).on("resize", function() {
+  //     var targetWidth = container.width();
+  //     chart.attr("width", targetWidth);
+  //     chart.attr("height", Math.round(targetWidth / aspect));
+  // }).trigger("resize");
 
   var horsepowerData = [{},
               {},
@@ -53,7 +67,7 @@ $(document).ready(function() {
               {},
               {},
               {},
-              {labelOne: '134hp', labelTwo: 'Lexus CT 200H', labelPosition: 'top'},
+              {title: '134hp', desc: 'Lexus CT 200H', labelPosition: 'top'},
               {},
               {},
               {},
@@ -66,27 +80,14 @@ $(document).ready(function() {
               {},
               {},
               {},
-              {labelOne: '170hp', labelTwo: 'BMW i3', labelPosition: 'bottom'},
+              {title: '170hp', desc: 'BMW i3', labelPosition: 'bottom'},
               {},
               {},
               {},
               {},
               {},
               {},
-              {labelOne: '177hp', labelTwo: 'Mercedes B class ED', labelPosition: 'top'},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {labelOne: '180hp', labelTwo: 'BMW 320i', labelPosition: 'bottom'},
+              {title: '177hp', desc: 'Mercedes B class ED', labelPosition: 'top'},
               {},
               {},
               {},
@@ -94,6 +95,12 @@ $(document).ready(function() {
               {},
               {},
               {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {title: '180hp', desc: 'BMW 320i', labelPosition: 'bottom'},
               {},
               {},
               {},
@@ -111,7 +118,14 @@ $(document).ready(function() {
               {},
               {},
               {},
-              {labelOne: '204hp', labelTwo: 'A3 e-tron', labelPosition: 'top', labelStyle: 'emphasis'}
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {title: '204hp', desc: 'A3 e-tron', labelPosition: 'top', labelStyle: 'emphasis'}
               ]
 
   var chargingData = [{},
@@ -124,21 +138,11 @@ $(document).ready(function() {
               {},
               {},
               {},
-              {labelOne: '2h', labelTwo: 'iPhone', labelPosition: 'bottom'},
+              {title: '2h', desc: 'iPhone', labelPosition: 'bottom'},
               {},
               {},
               {},
-              {labelOne: '2.3h', labelTwo: 'A3 e-tron', labelPosition: 'top', labelStyle: 'emphasis'},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {labelOne: '3h', labelTwo: 'Laptop', labelPosition: 'bottom'},
+              {title: '2.3h', desc: 'A3 e-tron', labelPosition: 'top', labelStyle: 'emphasis'},
               {},
               {},
               {},
@@ -148,11 +152,7 @@ $(document).ready(function() {
               {},
               {},
               {},
-              {},
-              {},
-              {},
-              {},
-              {labelOne: '4.5h', labelTwo: 'AA battery', labelPosition: 'top'},
+              {title: '3h', desc: 'Laptop', labelPosition: 'bottom'},
               {},
               {},
               {},
@@ -163,7 +163,21 @@ $(document).ready(function() {
               {},
               {},
               {},
-              {labelOne: '5.5', labelTwo: 'iPad', labelPosition: 'bottom'}]
+              {},
+              {},
+              {},
+              {title: '4.5h', desc: 'AA battery', labelPosition: 'top'},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {title: '5.5', desc: 'iPad', labelPosition: 'bottom'}]
 
   var sunData = [
     {},
@@ -188,6 +202,7 @@ $(document).ready(function() {
     {},
     {}
   ]
+
 
   var lineChart = (function() {
 
@@ -284,13 +299,13 @@ $(document).ready(function() {
 
 
       // attach text labels to each group
-      // d.labelOne is the top label, based on the y height attribute
+      // d.title is the top label, based on the y height attribute
       groups.append("text")
           .attr("x", "-15")
           .attr("y", barHeight + 80)
           .style('font-size', '22')
           .attr("dy", ".5em")
-          .text( function(d) { return d.labelOne });
+          .text( function(d) { return d.title });
 
       groups.append("text")
           .attr("x", "-15")
@@ -298,7 +313,7 @@ $(document).ready(function() {
           .style('font-size', '12')
           .style('color', 'gray')
           .attr("dy", ".2em")
-          .text( function(d) { return d.labelTwo });
+          .text( function(d) { return d.desc });
 
       // Text Positioning
       groups.each(labelsPosition)
