@@ -235,10 +235,6 @@ $(document).ready(function() {
 
       var groups = setGroupDistance(data);
 
-      // main lines, styled with CSS
-      groups.append("rect")
-          .attr("width", 1.5)
-          .attr("height", barHeight)
 
       // line ascenders and descenders are drawn behind the main bars
       // TODO: add a class and CSS style
@@ -246,25 +242,9 @@ $(document).ready(function() {
           .attr("width", 1)
           // the total height of the extender up and down is 70 pixels, 35 below and above
           .attr("height", barHeight + 70)
-          .attr("transform", "translate(0.5, -35)")
+          .attr("transform", "translate( 0.4, -35)")
           .style('opacity', 0.7)
           .style('fill', 'gray')
-
-      // attach text labels to each group
-      // d.labelOne is the top label, based on the y height attribute
-      groups.append("text")
-          .attr("x", "-15")
-          .attr("y", barHeight + 80)
-          .style('font-size', '22')
-          .attr("dy", ".5em")
-          .text( function(d) { return d.labelOne });
-
-      groups.append("text")
-          .attr("x", "-15")
-          .attr("y", barHeight + 110)
-          .style('font-size', '12')
-          .attr("dy", ".2em")
-          .text( function(d) { return d.labelTwo });
 
       // bar extenders to the text position
       groups.each(labelExtender)
@@ -285,7 +265,7 @@ $(document).ready(function() {
             .attr("height", 120)
             .style('opacity', '0.9')
             .style('fill', 'gray')
-            .attr("transform", "translate(1, -120)")
+            .attr("transform", "translate( 0.4, -120)")
         } else if (d.labelPosition === 'bottom'){
           d3.select(this)
             .append("rect")
@@ -293,9 +273,32 @@ $(document).ready(function() {
             .attr("height", 120)
             .style('opacity', '0.9')
             .style('fill', 'gray')
-            .attr("transform", "translate(1," + barHeight + ")")
+            .attr("transform", "translate( 0.4," + barHeight + ")")
         }
       }
+
+      // main lines, styled with CSS
+      groups.append("rect")
+          .attr("width", 1.5)
+          .attr("height", barHeight)
+
+
+      // attach text labels to each group
+      // d.labelOne is the top label, based on the y height attribute
+      groups.append("text")
+          .attr("x", "-15")
+          .attr("y", barHeight + 80)
+          .style('font-size', '22')
+          .attr("dy", ".5em")
+          .text( function(d) { return d.labelOne });
+
+      groups.append("text")
+          .attr("x", "-15")
+          .attr("y", barHeight + 110)
+          .style('font-size', '12')
+          .style('color', 'gray')
+          .attr("dy", ".2em")
+          .text( function(d) { return d.labelTwo });
 
       // Text Positioning
       groups.each(labelsPosition)
@@ -387,6 +390,7 @@ $(document).ready(function() {
   function events(){
 
    function clear(){
+      // creates an empty d3 selection and removes all nodes
       d3.selectAll("g")
         .data([])
         .exit().remove()
