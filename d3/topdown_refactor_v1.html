@@ -53,7 +53,7 @@ $(document).ready(function() {
               {},
               {},
               {},
-              {labelOne: '134HP', labelTwo: 'Lexus CT 200H', labelPosition: 'top'},
+              {labelOne: '134hp', labelTwo: 'Lexus CT 200H', labelPosition: 'top'},
               {},
               {},
               {},
@@ -66,27 +66,14 @@ $(document).ready(function() {
               {},
               {},
               {},
-              {labelOne: '170HP', labelTwo: 'BMW i3', labelPosition: 'bottom'},
+              {labelOne: '170hp', labelTwo: 'BMW i3', labelPosition: 'bottom'},
               {},
               {},
               {},
               {},
               {},
               {},
-              {labelOne: '177HP', labelTwo: 'Mercedes B class ED', labelPosition: 'top'},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {},
-              {labelOne: '180HP', labelTwo: 'BMW 320i', labelPosition: 'bottom'},
+              {labelOne: '177hp', labelTwo: 'Mercedes B class ED', labelPosition: 'top'},
               {},
               {},
               {},
@@ -94,6 +81,12 @@ $(document).ready(function() {
               {},
               {},
               {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {labelOne: '180hp', labelTwo: 'BMW 320i', labelPosition: 'bottom'},
               {},
               {},
               {},
@@ -111,7 +104,14 @@ $(document).ready(function() {
               {},
               {},
               {},
-              {labelOne: '204HP', labelTwo: 'A3 e-tron', labelPosition: 'top', labelStyle: 'emphasis'}
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {labelOne: '204hp', labelTwo: 'A3 e-tron', labelPosition: 'top', labelStyle: 'emphasis'}
               ]
 
   var chargingData = [{},
@@ -198,9 +198,22 @@ $(document).ready(function() {
 
     var chart = d3.select(".chart");
 
+
     var setCanvas = function(){
       chart.attr("width", "100%")
            .attr("height", 800)
+    }
+
+    var setGroupDistance = function (data) {
+      var groups = chart.selectAll("g")
+          .data(data)
+          // and create groups spaced at distance apart with the translate function
+          // set the opacity to the starting opacity
+          .enter().append("g")
+                .attr("transform", function(d, i) { return "translate(" + barDistance * i + ", 300)" })
+                .style('opacity', 0.1);
+
+      return groups;
     }
 
     // selection
@@ -209,22 +222,24 @@ $(document).ready(function() {
       setCanvas();
 
       // create bar groups
-      var bar = chart.selectAll("g")
-          .data(data)
-          // and create groups spaced at distance apart with the translate function
-          // set the opacity to the starting opacity
-          .enter().append("g")
-                .attr("transform", function(d, i) { return "translate(" + barDistance * i + ", 300)" })
-                .style('opacity', 0.1);
+      // var bar = chart.selectAll("g")
+      //     .data(data)
+      //     // and create groups spaced at distance apart with the translate function
+      //     // set the opacity to the starting opacity
+      //     .enter().append("g")
+      //           .attr("transform", function(d, i) { return "translate(" + barDistance * i + ", 300)" })
+      //           .style('opacity', 0.1);
+
+      var groups = setGroupDistance(data);
 
       // main lines, styled with CSS
-      bar.append("rect")
+      groups.append("rect")
           .attr("width", 1.5)
           .attr("height", barHeight)
 
       // line ascenders and descenders are drawn behind the main bars
       // TODO: add a class and CSS style
-      bar.append("rect")
+      groups.append("rect")
           .attr("width", 1)
           // the total height of the extender up and down is 70 pixels, 35 below and above
           .attr("height", barHeight + 70)
@@ -234,35 +249,37 @@ $(document).ready(function() {
 
       // attach text labels to each group
       // d.labelOne is the top label, based on the y height attribute
-      bar.append("text")
+      groups.append("text")
+          .attr("x", "-15")
           .attr("y", barHeight + 90)
-          .attr("dy", ".35em")
-          .attr("class", function(d) { return d.class })
+          .style('font-size', '22')
+          .attr("dy", ".5em")
           .text( function(d) { return d.labelOne });
 
-      bar.append("text")
+      groups.append("text")
+          .attr("x", "-15")
           .attr("y", barHeight + 120)
-          .attr("dy", ".35em")
-          .attr("class", function(d) { return d.class })
+          .style('font-size', '12')
+          .attr("dy", ".2em")
           .text( function(d) { return d.labelTwo });
 
       // bar extenders to Text Position
-      bar.each(barExtender)
+      groups.each(barExtender)
 
       function barExtender(d, i){
         if(d.labelPosition === 'top') {
           d3.select(this)
             .append("rect")
             .attr("width", 1)
-            .attr("height", 100)
-            .attr("transform", "translate(1, -100)")
+            .attr("height", 120)
+            .attr("transform", "translate(1, -120)")
             .style('opacity', 0.7)
             .style('fill', 'gray')
         } else if (d.labelPosition === 'bottom'){
           d3.select(this)
             .append("rect")
             .attr("width", 1)
-            .attr("height", 100)
+            .attr("height", 125)
             .attr("transform", "translate(1," + barHeight + ")")
             .style('opacity', 0.7)
             .style('fill', 'gray')
