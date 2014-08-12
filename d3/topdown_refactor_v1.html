@@ -12,9 +12,17 @@
   text-anchor: end;
 }
 
+svg {
+  display: block;
+}
+
 </style>
-<button id="vertical">vertical</button>
+<button id="hp-vertical">horsepower animate</button>
+<button id="hp-static">horsepower static</button>
+<button id="charge-vertical">charging animate</button>
+<button id="charge-static">charging static</button>
 <button id="radial">radial</button>
+<button id="radial-static">radial static</button>
 <button id="animate">animate</button>
 <button id="clear">clear</button>
 <svg class="chart"></svg>
@@ -106,6 +114,57 @@ $(document).ready(function() {
               {labelOne: '204HP', labelTwo: 'A3 e-tron', labelPosition: 'top', labelStyle: 'emphasis'}
               ]
 
+  var chargingData = [{},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {labelOne: '2h', labelTwo: 'iPhone', labelPosition: 'bottom'},
+              {},
+              {},
+              {},
+              {labelOne: '2.3h', labelTwo: 'A3 e-tron', labelPosition: 'top', labelStyle: 'emphasis'},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {labelOne: '3h', labelTwo: 'Laptop', labelPosition: 'bottom'},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {labelOne: '4.5h', labelTwo: 'AA battery', labelPosition: 'top'},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {labelOne: '5.5', labelTwo: 'iPad', labelPosition: 'bottom'}]
+
   var sunData = [
     {},
     {},
@@ -137,11 +196,17 @@ $(document).ready(function() {
       barHeight = 150,
       barDistance = 15;
 
+    var chart = d3.select(".chart");
+
+    var setCanvas = function(){
+      chart.attr("width", "100%")
+           .attr("height", 800)
+    }
+
     // selection
     var draw = function(data){
-      var chart = d3.select(".chart")
-        .attr("width", "100%")
-        .attr("height", 800)
+
+      setCanvas();
 
       // create bar groups
       var bar = chart.selectAll("g")
@@ -238,17 +303,29 @@ $(document).ready(function() {
 
   })();
 
-  // module pattern with closure
+  // module pattern
   var radialChart = (function(){
     // configuration defaults
     var width = 1000,
       radialDegrees = 180,
-      barHeight = 200,
+      barHeight = 225,
       centerLineExtenders = true,
       centerX = 300,
       centerY = 300;
 
+    // add update Settings Method:
+
+    // private method
+    var drawCenterMask = function(){
+      d3.select(".chart").append("circle")
+        .attr("cx", centerX)
+        .attr("cy", centerY)
+        .attr("r", 90)
+        .attr("fill", "white")
+    }
+
     var draw = function (data) {
+
       var totalLines = data.length;
       var chart = d3.select(".chart")
         .attr("width", "100%")
@@ -269,6 +346,8 @@ $(document).ready(function() {
         .attr("height", barHeight)
         .attr("x", centerX)
         .attr("y", centerY)
+
+      drawCenterMask()
     }
 
     return {
@@ -297,21 +376,37 @@ $(document).ready(function() {
         })
     }
 
-    // add button click handler to trigger the opacity animation
-    // change this later to run automatically
-    $('#animate').click(opacityFadeStagger)
+    var showOpacity = function(){
+      d3.selectAll("g")
+        .each( function(d) {
+          d3.select(this).style('opacity', 1)
+        })
+    }
 
+    var drawLineChart = function(data){
+      clear()
+      lineChart.draw(data)
+    }
 
+    var drawRadialChart = function(data){
+      clear()
+      radialChart.draw(data)
+    }
+
+    // add click handlers
+    // $('#animate').click(opacityFadeStagger)
     $('#clear').click(clear)
-    // $('#vertical').click(drawTopDown(horsepowerData))
-
-
+    $('#hp-vertical').on('click', function(){ drawLineChart(horsepowerData); opacityFadeStagger(); })
+    $('#hp-static').on('click', function(){ drawLineChart(horsepowerData); showOpacity(); })
+    $('#charge-vertical').on('click', function(){ drawLineChart(chargingData); opacityFadeStagger(); })
+    $('#charge-static').on('click', function(){ drawLineChart(chargingData); showOpacity(); })
+    $('#radial').click( function(){ drawRadialChart(sunData); opacityFadeStagger(); } )
+    $('#radial-static').click( function(){ drawRadialChart(sunData); showOpacity(); } )
+    $('#animate').click( function() { opacityFadeStagger() })
   }
 
   // // call the function
   events();
-  // radialChart.draw(sunData)
-  lineChart.draw(horsepowerData)
 
 })
 </script>
