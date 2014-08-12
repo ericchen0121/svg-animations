@@ -247,7 +247,7 @@ $(document).ready(function() {
           // the total height of the extender up and down is 70 pixels, 35 below and above
           .attr("height", barHeight + 70)
           .attr("transform", "translate(0.5, -35)")
-          .style('opacity', 0.2)
+          .style('opacity', 0.7)
           .style('fill', 'gray')
 
       // attach text labels to each group
@@ -267,9 +267,9 @@ $(document).ready(function() {
           .text( function(d) { return d.labelTwo });
 
       // bar extenders to the text position
-      groups.each(barExtender)
+      groups.each(labelExtender)
 
-      function barExtender(d, i){
+      function labelExtender(d, i){
 
         if(d.labelPosition === 'top' && d.labelStyle === 'emphasis') {
           d3.select(this)
@@ -283,7 +283,7 @@ $(document).ready(function() {
             .append("rect")
             .attr("width", 1)
             .attr("height", 120)
-            .style('opacity', 0.7)
+            .style('opacity', '0.9')
             .style('fill', 'gray')
             .attr("transform", "translate(1, -120)")
         } else if (d.labelPosition === 'bottom'){
@@ -291,18 +291,13 @@ $(document).ready(function() {
             .append("rect")
             .attr("width", 1)
             .attr("height", 120)
-            .style('opacity', 0.7)
+            .style('opacity', '0.9')
             .style('fill', 'gray')
             .attr("transform", "translate(1," + barHeight + ")")
         }
       }
 
       // Text Positioning
-      // loop thru and move up or down conditionally
-      // d3 selectAll "text" nodes
-      var labels = chart.selectAll("text")
-
-      // position all labels
       groups.each(labelsPosition)
 
       // emphasize the label with emphasis style
@@ -312,19 +307,19 @@ $(document).ready(function() {
         // default position is 'bottom', and is positioned as such
         if( d.labelPosition === 'top') {
           d3.select(this).selectAll("text")
-            .attr("transform", "translate( 0, -" + (barHeight + 200) + ")")
+            .attr("transform", "translate( 0, -" + (barHeight + 190) + ")")
         }
       }
 
       function labelsStyle(d, i) {
         if( d.labelStyle === 'emphasis' ) {
           d3.select(this).selectAll("text")
-            .attr("transform", "translate( 0, -" + (barHeight + 255) + ")");
+            .attr("transform", "translate( -10, -" + (barHeight + 235) + ")");
 
           // size and move the first text element
           d3.select(this).select("text")
-            .style("font-size", "42")
-            .attr("transform", "translate( 0, -" + (barHeight + 275) +")");
+            .style("font-size", "52")
+            .attr("transform", "translate( -10, -" + (barHeight + 255) +")");
         }
       }
     }
