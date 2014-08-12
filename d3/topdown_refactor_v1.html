@@ -25,10 +25,7 @@ svg {
 <button id="radial-static">radial static</button>
 <button id="animate">animate</button>
 <button id="clear">clear</button>
-<div id="container">
-  <!-- <svg class="chart" width="800" height="600"
-    viewbox ="0 0 800 600"
-    preserveAspectRatio="xMidYMid"></svg> -->
+<div id="chart-container">
     <svg class="chart"></svg>
 </div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -211,12 +208,28 @@ $(document).ready(function() {
       barHeight = 150,
       barDistance = 17;
 
-    var chart = d3.select(".chart");
+    var chart = d3.select("svg");
 
 
-    var setCanvas = function(){
-      chart.attr("width", "100%")
-           .attr("height", 800)
+    var setResponsiveChartSize = function(){
+
+      // Dynamically resize SVG based on parent container size
+      // http://www.tnoda.com/blog/2013-10-14
+
+      var width = $("#chart-container").width(),
+          aspect = 800/1500;
+
+      chart.attr("preserveAspectRatio", "xMinYMin")
+          .attr("viewBox", "0 0 1500 800")
+          .attr("width", width)
+          .attr("height", width * aspect)
+
+      $(window).resize(function() {
+        var width = $("#chart-container").width();
+        chart.attr("width", width)
+        chart.attr("height", width * aspect);
+      })
+
     }
 
     // A d3 Group is a grouping of svg elements
@@ -237,7 +250,7 @@ $(document).ready(function() {
     // selection
     var draw = function(data){
 
-      setCanvas();
+      setResponsiveChartSize();
 
       // create bar groups
       // var bar = chart.selectAll("g")
