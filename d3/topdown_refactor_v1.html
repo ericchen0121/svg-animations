@@ -194,7 +194,7 @@ $(document).ready(function() {
     // default options
     var width = 1000,
       barHeight = 150,
-      barDistance = 15;
+      barDistance = 17;
 
     var chart = d3.select(".chart");
 
@@ -204,6 +204,9 @@ $(document).ready(function() {
            .attr("height", 800)
     }
 
+    // A d3 Group is a grouping of svg elements
+    // Each group is created as <g> element from an object in the array dataset
+    // Each group will contain the bars and the text elements
     var setGroupDistance = function (data) {
       var groups = chart.selectAll("g")
           .data(data)
@@ -243,7 +246,7 @@ $(document).ready(function() {
           .attr("width", 1)
           // the total height of the extender up and down is 70 pixels, 35 below and above
           .attr("height", barHeight + 70)
-          .attr("transform", "translate(1, -35)")
+          .attr("transform", "translate(0.5, -35)")
           .style('opacity', 0.2)
           .style('fill', 'gray')
 
@@ -251,38 +254,46 @@ $(document).ready(function() {
       // d.labelOne is the top label, based on the y height attribute
       groups.append("text")
           .attr("x", "-15")
-          .attr("y", barHeight + 90)
+          .attr("y", barHeight + 80)
           .style('font-size', '22')
           .attr("dy", ".5em")
           .text( function(d) { return d.labelOne });
 
       groups.append("text")
           .attr("x", "-15")
-          .attr("y", barHeight + 120)
+          .attr("y", barHeight + 110)
           .style('font-size', '12')
           .attr("dy", ".2em")
           .text( function(d) { return d.labelTwo });
 
-      // bar extenders to Text Position
+      // bar extenders to the text position
       groups.each(barExtender)
 
       function barExtender(d, i){
-        if(d.labelPosition === 'top') {
+
+        if(d.labelPosition === 'top' && d.labelStyle === 'emphasis') {
+          d3.select(this)
+            .append("rect")
+            .attr("width", 5)
+            // set the emphasized bar height and position it
+            .attr("height", 195 + barHeight)
+            .attr("transform", "translate(0, -195)")
+        } else if (d.labelPosition ==='top') {
           d3.select(this)
             .append("rect")
             .attr("width", 1)
             .attr("height", 120)
-            .attr("transform", "translate(1, -120)")
             .style('opacity', 0.7)
             .style('fill', 'gray')
+            .attr("transform", "translate(1, -120)")
         } else if (d.labelPosition === 'bottom'){
           d3.select(this)
             .append("rect")
             .attr("width", 1)
-            .attr("height", 125)
-            .attr("transform", "translate(1," + barHeight + ")")
+            .attr("height", 120)
             .style('opacity', 0.7)
             .style('fill', 'gray')
+            .attr("transform", "translate(1," + barHeight + ")")
         }
       }
 
@@ -292,24 +303,28 @@ $(document).ready(function() {
       var labels = chart.selectAll("text")
 
       // position all labels
-      labels.each(labelsPosition)
+      groups.each(labelsPosition)
 
       // emphasize the label with emphasis style
-      labels.each(labelsStyle)
+      groups.each(labelsStyle)
 
       function labelsPosition(d, i) {
         // default position is 'bottom', and is positioned as such
         if( d.labelPosition === 'top') {
-          d3.select(this)
+          d3.select(this).selectAll("text")
             .attr("transform", "translate( 0, -" + (barHeight + 200) + ")")
         }
       }
 
       function labelsStyle(d, i) {
         if( d.labelStyle === 'emphasis' ) {
-          d3.select(this)
-            .attr("transform", "translate( 0, -" + (barHeight + 270) + ")")
+          d3.select(this).selectAll("text")
+            .attr("transform", "translate( 0, -" + (barHeight + 255) + ")");
 
+          // size and move the first text element
+          d3.select(this).select("text")
+            .style("font-size", "42")
+            .attr("transform", "translate( 0, -" + (barHeight + 275) +")");
         }
       }
     }
@@ -333,7 +348,7 @@ $(document).ready(function() {
     // add update Settings Method:
 
     // private method
-    var drawCenterMask = function(){
+    var _drawCenterMask = function(){
       d3.select(".chart").append("circle")
         .attr("cx", centerX)
         .attr("cy", centerY)
@@ -354,7 +369,7 @@ $(document).ready(function() {
         .attr("transform", function(d, i) {
           var rotateDegree = (radialDegrees / (totalLines - 1)) * i  + 90;
           // centerX + (1/2) * barWidth
-          return "rotate(" + rotateDegree + " " + (centerX + 0.5)+ ", " + centerY + ")"
+          return "rotate(" + rotateDegree + " " + (centerX + 0.5) + ", " + centerY + ")"
         })
         .style('opacity', 0.1)
 
@@ -364,7 +379,7 @@ $(document).ready(function() {
         .attr("x", centerX)
         .attr("y", centerY)
 
-      drawCenterMask()
+      _drawCenterMask()
     }
 
     return {
@@ -382,7 +397,7 @@ $(document).ready(function() {
         .exit().remove()
     }
 
-    var opacityFadeStagger = function() {
+    var animateIn = function() {
       // d3 selector#each method which runs the callback function for every item in the array
       d3.selectAll("g")
         .each(function(d, i){
@@ -393,6 +408,24 @@ $(document).ready(function() {
         })
     }
 
+
+    var animateInFaded = function() {
+      // d3 selector#each method which runs the callback function for every item in the array
+      d3.selectAll("g")
+        .each(function(d, i){
+          // gradually fade in the opacity
+          if(i < 15){
+            var fadeOpacity = i * .07
+          } else{
+            fadeOpacity = 1
+          }
+
+          d3.select(this).transition()
+            .style('opacity', fadeOpacity)
+            .duration(150)
+            .delay(30 * i)
+        })
+    }
     var showOpacity = function(){
       d3.selectAll("g")
         .each( function(d) {
@@ -411,15 +444,15 @@ $(document).ready(function() {
     }
 
     // add click handlers
-    // $('#animate').click(opacityFadeStagger)
+    // $('#animate').click(animateIn)
     $('#clear').click(clear)
-    $('#hp-vertical').on('click', function(){ drawLineChart(horsepowerData); opacityFadeStagger(); })
+    $('#hp-vertical').on('click', function(){ drawLineChart(horsepowerData); animateInFaded(); })
     $('#hp-static').on('click', function(){ drawLineChart(horsepowerData); showOpacity(); })
-    $('#charge-vertical').on('click', function(){ drawLineChart(chargingData); opacityFadeStagger(); })
+    $('#charge-vertical').on('click', function(){ drawLineChart(chargingData); animateInFaded(); })
     $('#charge-static').on('click', function(){ drawLineChart(chargingData); showOpacity(); })
-    $('#radial').click( function(){ drawRadialChart(sunData); opacityFadeStagger(); } )
+    $('#radial').click( function(){ drawRadialChart(sunData); animateIn(); } )
     $('#radial-static').click( function(){ drawRadialChart(sunData); showOpacity(); } )
-    $('#animate').click( function() { opacityFadeStagger() })
+    $('#animate').click( function() { animateIn() })
   }
 
   // // call the function
