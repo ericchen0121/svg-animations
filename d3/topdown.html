@@ -13,8 +13,10 @@
 }
 
 </style>
-
-<button>opacity</button>
+<button id="vertical">vertical</button>
+<button id="radial">radial</button>
+<button id="animate">animate</button>
+<button id="clear">clear</button>
 <svg class="chart"></svg>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
@@ -227,24 +229,6 @@ function drawTopDown(data) {
     }
   }
 
-  //
-  var opacityFadeStagger = function() {
-    // d3 selector#each method which runs the callback function for every item in the array
-    bar.each(opacityFadeCallback)
-  }
-
-  // callback function for d3.selection.each iterator
-  // this exposes the datum (d) and index (i) of the selector
-  function opacityFadeCallback(d, i) {
-    d3.select(this).transition()
-      .style('opacity', 1)
-      .duration(150)
-      .delay(30 * i)
-  }
-
-  // add button click handler to trigger the opacity animation
-  // change this later to run automatically
-  $('button').click(opacityFadeStagger)
 }
 
 
@@ -278,27 +262,43 @@ function drawRadialChart(data){
     .attr("x", centerX)
     .attr("y", centerY)
 
-  var opacityFadeStagger = function() {
-    // d3 selector#each method which runs the callback function for every item in the array
-    bar.each(opacityFadeCallback)
+}
+
+function events(){
+
+ function clear(){
+    d3.selectAll("g")
+      .data([])
+      .exit().remove()
   }
 
-  // callback function for d3.selection.each iterator
-  // this exposes the datum (d) and index (i) of the selector
-  function opacityFadeCallback(d, i) {
-    d3.select(this).transition()
-      .style('opacity', 1)
-      .duration(150)
-      .delay(30 * i)
+  var opacityFadeStagger = function() {
+    // d3 selector#each method which runs the callback function for every item in the array
+    d3.selectAll("g")
+      .each(function(d, i){
+        d3.select(this).transition()
+        .style('opacity', 1)
+        .duration(150)
+        .delay(30 * i)
+      })
   }
 
   // add button click handler to trigger the opacity animation
   // change this later to run automatically
-  $('button').click(opacityFadeStagger)
+  $('#animate').click(opacityFadeStagger)
+
+
+  $('#clear').click(clear)
+  // $('#vertical').click(drawTopDown(horsepowerData))
+  // $('#radial').click(drawRadialChart(sunData))
 
 }
 
-// call the function
-// drawTopDown(horsepowerData);
-drawRadialChart(sunData);
+// // call the function
+events()
+// $('#vertical').click(drawTopDown(horsepowerData));
+// $('#radial').click(drawRadialChart(sunData));
+
+drawTopDown(horsepowerData)
+drawRadialChart(sunData)
 </script>
