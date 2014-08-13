@@ -200,19 +200,10 @@ $(document).ready(function() {
     {}
   ]
 
-
-  var lineChart = (function() {
-
-    // default options
-    var width = 1000,
-      barHeight = 150,
-      barDistance = 17;
-
-    var chart = d3.select("svg");
-
-
+  var svgUtils = (function() {
     var setResponsiveChartSize = function(){
 
+      var chart = d3.select("svg");
       // Dynamically resize SVG based on parent container size
       // http://www.tnoda.com/blog/2013-10-14
 
@@ -229,8 +220,24 @@ $(document).ready(function() {
         chart.attr("width", width)
         chart.attr("height", width * aspect);
       })
-
     }
+
+    return {
+      setResponsiveChartSize: setResponsiveChartSize
+    }
+
+  })();
+
+  var lineChart = (function() {
+
+    svgUtils.setResponsiveChartSize();
+
+    // default options
+    var width = 1000,
+      barHeight = 150,
+      barDistance = 17;
+
+    var chart = d3.select("svg");
 
     // A d3 Group is a grouping of svg elements
     // Each group is created as <g> element from an object in the array dataset
@@ -249,8 +256,6 @@ $(document).ready(function() {
 
     // selection
     var draw = function(data){
-
-      setResponsiveChartSize();
 
       // create bar groups
       // var bar = chart.selectAll("g")
@@ -363,6 +368,9 @@ $(document).ready(function() {
 
   // module pattern
   var radialChart = (function(){
+
+    svgUtils.setResponsiveChartSize();
+
     // configuration defaults
     var width = 1000,
       radialDegrees = 180,
@@ -386,15 +394,16 @@ $(document).ready(function() {
 
       var totalLines = data.length;
       var chart = d3.select(".chart")
-        .attr("width", "100%")
-        .attr("height", 800)
 
-       var bar = chart.selectAll("g")
+
+      var bar = chart.selectAll("g")
         .data(data)
         .enter().append("g")
         .attr("transform", function(d, i) {
+          // calculate the degree to rotate based on the total number of elements in the data array
           var rotateDegree = (radialDegrees / (totalLines - 1)) * i  + 90;
           // centerX + (1/2) * barWidth
+          // this rotates the line around the rotateDegree and same centerX and centerY point
           return "rotate(" + rotateDegree + " " + (centerX + 0.5) + ", " + centerY + ")"
         })
         .style('opacity', 0.1)
