@@ -34,15 +34,7 @@ svg {
 <script>
 $(document).ready(function() {
 
-  // var chart = $(".chart"),
-  //   aspect = chart.width() / chart.height(),
-  //   container = chart.parent();
-  // $(window).on("resize", function() {
-  //     var targetWidth = container.width();
-  //     chart.attr("width", targetWidth);
-  //     chart.attr("height", Math.round(targetWidth / aspect));
-  // }).trigger("resize");
-
+  // inject it or make endpoint and return json
   var horsepowerData = [{},
               {},
               {},
@@ -200,6 +192,32 @@ $(document).ready(function() {
     {}
   ]
 
+  // mock data
+  var cqHorsepowerData = {
+    chartType: 'linear',
+    numberOfLines: 50,
+    data: [
+      { "line": "5",
+        "title": '',
+        "descr": '',
+        "position": '',
+        "style":''
+      },
+      { "line": "5",
+        "title": '',
+        "descr": '',
+        "position": '',
+        "style": ''
+      },
+      { "line": "5",
+        "title": '',
+        "descr": '',
+        "position": '',
+        "style": ''
+      }
+    ]
+  }
+
   var svgUtils = (function() {
     var setResponsiveChartSize = function(){
 
@@ -222,9 +240,15 @@ $(document).ready(function() {
       })
     }
 
+    var processCQData = function(){
+
+    }
+
     return {
       setResponsiveChartSize: setResponsiveChartSize
     }
+
+
 
   })();
 
@@ -233,8 +257,7 @@ $(document).ready(function() {
     svgUtils.setResponsiveChartSize();
 
     // default options
-    var width = 1000,
-      barHeight = 150,
+    var barHeight = 150,
       barDistance = 17;
 
     var chart = d3.select("svg");
@@ -242,7 +265,7 @@ $(document).ready(function() {
     // A d3 Group is a grouping of svg elements
     // Each group is created as <g> element from an object in the array dataset
     // Each group will contain the bars and the text elements
-    var setGroupDistance = function (data) {
+    var _drawGroupDistance = function (data) {
       var groups = chart.selectAll("g")
           .data(data)
           // and create groups spaced at distance apart with the translate function
@@ -254,20 +277,58 @@ $(document).ready(function() {
       return groups;
     }
 
+    function _drawLabelExtender(d, i){
+
+      if(d.labelPosition === 'top' && d.labelStyle === 'emphasis') {
+        d3.select(this)
+          .append("rect")
+          .attr("width", 5)
+          // set the emphasized bar height and position it
+          .attr("height", 195 + barHeight)
+          .attr("transform", "translate(0, -195)")
+      } else if (d.labelPosition ==='top') {
+        d3.select(this)
+          .append("rect")
+          .attr("width", 1)
+          .attr("height", 120)
+          .style('opacity', '0.9')
+          .style('fill', 'gray')
+          .attr("transform", "translate( 0.4, -120)")
+      } else if (d.labelPosition === 'bottom'){
+        d3.select(this)
+          .append("rect")
+          .attr("width", 1)
+          .attr("height", 120)
+          .style('opacity', '0.9')
+          .style('fill', 'gray')
+          .attr("transform", "translate( 0.4," + barHeight + ")")
+      }
+    }
+
+    function _drawLabelPosition(d, i) {
+      // default position is 'bottom', and is positioned as such
+      if( d.labelPosition === 'top') {
+        d3.select(this).selectAll("text")
+          .attr("transform", "translate( 0, -" + (barHeight + 190) + ")")
+      }
+    }
+
+    function _drawLabelStyle(d, i) {
+      if( d.labelStyle === 'emphasis' ) {
+        d3.select(this).selectAll("text")
+          .attr("transform", "translate( -10, -" + (barHeight + 235) + ")");
+
+        // size and move the first text element
+        d3.select(this).select("text")
+          .style("font-size", "52")
+          .attr("transform", "translate( -10, -" + (barHeight + 255) +")");
+      }
+    }
+
     // selection
     var draw = function(data){
 
-      // create bar groups
-      // var bar = chart.selectAll("g")
-      //     .data(data)
-      //     // and create groups spaced at distance apart with the translate function
-      //     // set the opacity to the starting opacity
-      //     .enter().append("g")
-      //           .attr("transform", function(d, i) { return "translate(" + barDistance * i + ", 300)" })
-      //           .style('opacity', 0.1);
-
-      var groups = setGroupDistance(data);
-
+      var groups = _drawGroupDistance(data);
 
       // line ascenders and descenders are drawn behind the main bars
       // TODO: add a class and CSS style
@@ -280,35 +341,7 @@ $(document).ready(function() {
           .style('fill', 'gray')
 
       // bar extenders to the text position
-      groups.each(labelExtender)
-
-      function labelExtender(d, i){
-
-        if(d.labelPosition === 'top' && d.labelStyle === 'emphasis') {
-          d3.select(this)
-            .append("rect")
-            .attr("width", 5)
-            // set the emphasized bar height and position it
-            .attr("height", 195 + barHeight)
-            .attr("transform", "translate(0, -195)")
-        } else if (d.labelPosition ==='top') {
-          d3.select(this)
-            .append("rect")
-            .attr("width", 1)
-            .attr("height", 120)
-            .style('opacity', '0.9')
-            .style('fill', 'gray')
-            .attr("transform", "translate( 0.4, -120)")
-        } else if (d.labelPosition === 'bottom'){
-          d3.select(this)
-            .append("rect")
-            .attr("width", 1)
-            .attr("height", 120)
-            .style('opacity', '0.9')
-            .style('fill', 'gray')
-            .attr("transform", "translate( 0.4," + barHeight + ")")
-        }
-      }
+      groups.each(_drawLabelExtender)
 
       // main lines, styled with CSS
       groups.append("rect")
@@ -334,30 +367,11 @@ $(document).ready(function() {
           .text( function(d) { return d.desc });
 
       // Text Positioning
-      groups.each(labelsPosition)
+      groups.each(_drawLabelPosition)
 
       // emphasize the label with emphasis style
-      groups.each(labelsStyle)
+      groups.each(_drawLabelStyle)
 
-      function labelsPosition(d, i) {
-        // default position is 'bottom', and is positioned as such
-        if( d.labelPosition === 'top') {
-          d3.select(this).selectAll("text")
-            .attr("transform", "translate( 0, -" + (barHeight + 190) + ")")
-        }
-      }
-
-      function labelsStyle(d, i) {
-        if( d.labelStyle === 'emphasis' ) {
-          d3.select(this).selectAll("text")
-            .attr("transform", "translate( -10, -" + (barHeight + 235) + ")");
-
-          // size and move the first text element
-          d3.select(this).select("text")
-            .style("font-size", "52")
-            .attr("transform", "translate( -10, -" + (barHeight + 255) +")");
-        }
-      }
     }
 
     return {
@@ -367,13 +381,12 @@ $(document).ready(function() {
   })();
 
   // module pattern
-  var radialChart = (function(){
+  var radialChart = (function() {
 
     svgUtils.setResponsiveChartSize();
 
     // configuration defaults
-    var width = 1000,
-      radialDegrees = 180,
+    var radialDegrees = 180,
       barHeight = 225,
       centerLineExtenders = true,
       centerX = 300,
